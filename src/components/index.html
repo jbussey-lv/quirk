@@ -1,0 +1,21 @@
+<html>
+<head>
+<script src="Board.js"></script>
+</head>
+<body>
+board.js
+<script>
+var tiles = Tile.getFullSet();
+var board = new Board();
+var player = new Player("John");
+var move = new Move();
+move.addPlacement(new Placement(100, 100, tiles.pop()));
+move.addPlacement(new Placement(100, 101, tiles.pop()));
+move.addPlacement(new Placement(100, 102, tiles.pop()));
+move.addPlacement(new Placement(100, 103, tiles.pop()));
+board.addMove(move);
+console.log(board.getGrid());
+
+</script>
+</body>
+</html>
