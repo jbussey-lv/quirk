@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "mocha": "^8.0.1",
+    "shuffle-array": "^1.0.1"
+  }
+}
