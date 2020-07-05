@@ -6,18 +6,11 @@ class Board {
 
   isSpaceTaken(row, col){
 
-    if(this.isSpaceOutOfBounds(row, col)){
+    if(this._isSpaceOutOfBounds(row, col)){
       throw new Error('That space is outside the bounds of the grid');
     }
 
-    return grid[row][col] == null;
-  }
-
-  isSpaceOutOfBounds(row, col){
-    return row < 0 ||
-           row >= Board.GRID_HEIGHT ||
-           col < 0 ||
-           col >= Board.GRID_WIDTH;
+    return this.getGrid()[row][col] !== null;
   }
 
   addMove(move){
@@ -57,6 +50,17 @@ class Board {
       left - Tile.getMaxLineLength(),
       right + Tile.getMaxLineLength(),
     ]
+  }
+
+  isIllegal(){
+      return true;
+  }
+
+  _isSpaceOutOfBounds(row, col){
+    return row < 0 ||
+           row >= Board.GRID_HEIGHT ||
+           col < 0 ||
+           col >= Board.GRID_WIDTH;
   }
 
   _getPlacements(){
