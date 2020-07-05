@@ -4,14 +4,20 @@ class Board {
   static GRID_HEIGHT = 200;
   moves = [];
 
-  isSpaceEmpty(row, col){
-    var grid = getGrid();
+  isSpaceTaken(row, col){
 
-    return grid[row, col] == null;
+    if(this.isSpaceOutOfBounds(row, col)){
+      throw new Error('That space is outside the bounds of the grid');
+    }
+
+    return grid[row][col] == null;
   }
 
-  isMoveLegal(move){
-    return true;
+  isSpaceOutOfBounds(row, col){
+    return row < 0 ||
+           row >= Board.GRID_HEIGHT ||
+           col < 0 ||
+           col >= Board.GRID_WIDTH;
   }
 
   addMove(move){
@@ -19,9 +25,9 @@ class Board {
   }
 
   getGrid(){
-    var grid = this.getEmptyGrid();
+    var grid = this._getEmptyGrid();
 
-    this.getPlacements().forEach(placement => {
+    this._getPlacements().forEach(placement => {
       grid[placement.row][placement.col] = placement.tile;
     });
 
@@ -37,7 +43,7 @@ class Board {
     var right  = Math.floor(Board.GRID_WIDTH / 2);
 
     // push outwards for each existing placement
-    this.getPlacements().forEach(placement => {
+    this._getPlacements().forEach(placement => {
       top    = Math.min(top, placement.row);
       bottom = Math.max(bottom, placement.row);
       left   = Math.min(left, placement.col);
@@ -53,7 +59,7 @@ class Board {
     ]
   }
 
-  getPlacements(){
+  _getPlacements(){
     var placements = new Array();
 
     this.moves.forEach(move => {
@@ -65,7 +71,7 @@ class Board {
     return placements;
   }
 
-  getEmptyGrid(){
+  _getEmptyGrid(){
 
     var emptyGrid = new Array();
 
