@@ -1,3 +1,5 @@
+var shuffle = require('shuffle-array');
+
 class Bag {
 
   tiles;
@@ -8,22 +10,23 @@ class Bag {
 
   tradeTiles(inputTiles){
 
-    // TODO: throw exception if input.size > this.tiles.size
-
     // first draw as many as we're returing...
     var outputTiles = this.drawTiles(inputTiles.length);
 
-    // only THEN return the ones we're giving back
-    this.returnTiles(inputTiles);
+    // only THEN replace the ones you're trading into the bag
+    this.replaceTiles(inputTiles);
 
     // finally return the set you drew before replacemnt
     return outputTiles;
   }
 
   drawTile(){
+    if(this.tiles.length < 1){
+      throw new Error('You can not draw when the bag is empty');
+    }
+    
+    shuffle(this.tiles);
 
-    // TODO: make it draw randomly
-    //       we won't shuffle, we'll always just pull ramdom
     return this.tiles.pop();
   }
 
@@ -39,13 +42,13 @@ class Bag {
     return drawn;
   }
 
-  returnTile(tile){
+  replaceTile(tile){
     this.tiles.push(tile);
     return this;
   }
 
-  returnTiles(tiles){
-    tiles.forEach(tile => this.returnTile(tile));
+  replaceTiles(tiles){
+    tiles.forEach(tile => this.replaceTile(tile));
     return this;
   }
 
