@@ -5,3 +5,5 @@ class Placement {
     this.tile = tile;
   }
 }
+
+module.exports = Placement;

@@ -4,14 +4,6 @@ class Player {
     this.name = name;
   }
 
-  getMoves(){
-    return [];
-  }
-
-  getPoints(){
-    this.getMoves().reduce(
-      (acc, move) => acc + move.getPoints(), 
-      0
-    );
-  }
 }
+
+module.exports = Player;

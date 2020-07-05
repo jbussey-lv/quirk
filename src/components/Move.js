@@ -27,3 +27,5 @@ class Move {
     return 5;
   }
 }
+
+module.exports = Move;
