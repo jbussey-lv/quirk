@@ -67,11 +67,20 @@ describe('Move', function () {
   describe('isIllegal()', function () {
 
     it('should return true if not linear', function(){
-
       var move = (new MoveBuilder())
                   .addTile(3, 0, 'blue', 'square')
                   .addTile(3, 1, 'blue', 'circle')
                   .addTile(4, 2, 'blue', 'plus')
+                  .build();
+
+      assert(move.isIllegal());
+    });
+
+    it('should return true if we add disjoint tiles', function(){
+      var move = (new MoveBuilder())
+                  .addTile(3, 0, 'blue', 'square')
+                  .addTile(3, 2, 'blue', 'plus')
+                  .addTile(3, 3, 'blue', 'plus')
                   .build();
 
       assert(move.isIllegal());

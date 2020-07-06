@@ -47,28 +47,33 @@ class Move {
   }
 
   isIllegal(){
-    return this._isNotLinear() ||
-           this._hasNoThroughLine() ||
+    return this._hasNoThroughLine() ||
            this.board.isIllegal();
   }
 
-  _isNotLinear(){
+  _hasNoThroughLine(){
 
-    // if we're empty... we're good
     if(this.placements.length === 0){return false;}
 
     var bounds = this._getBounds();
+    var colDiff = 0;
+    var rowDiff = 0;
 
-    return bounds.minRow !== bounds.maxRow &&
-           bounds.minCol !== bounds.maxCol;
-  }
+    if(bounds.minCol === bounds.maxCol){rowDiff = 1;}
+    else if(bounds.minRow === bounds.maxRow){colDiff = 1;}
+    else{return true;} // this means they're non-linear}
 
-  _hasNoThroughLine(){
-    
-    // figure out whether to traverse row or col
-    // figure low and high
-    // traverse from low to high and if any spaces found
-    //   return true
+    var col = bounds.minCol;
+    var row = bounds.minRow;
+    while(row <= bounds.maxRow && col <= bounds.maxCol ){
+      if(!this.board.isSpaceTaken(row, col)){
+        return true;
+      }
+
+      row += rowDiff;
+      col += colDiff;
+    }
+
     return false;
   }
 
