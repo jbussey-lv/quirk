@@ -25,3 +25,6 @@ class Tile {
     this.shape = shape;
   }
 }
+
+
+module.exports = Tile;

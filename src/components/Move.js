@@ -26,8 +26,9 @@ class Move {
       throw new Error('You can\'t add placements that overlap others already in the move');
     }
 
-    // TODO: throw excption if plaments overlap
     this.placements.push(placement);
+
+    return this;
   }
 
   removePlacment(index){
@@ -72,8 +73,8 @@ class Move {
   }
 
   _isNonLinear(){
-    var uniqueRows = _getUniquePlacementVals('row');
-    var uniqueCols = _getUniquePlacementVals('col');
+    var uniqueRows = this._getUniquePlacementVals('row');
+    var uniqueCols = this._getUniquePlacementVals('col');
 
     return uniqueCols.size > 1 &&
            uniqueRows.size > 1;
@@ -81,8 +82,8 @@ class Move {
 
   _hasNoPattern(){
 
-    var uniqueColors = _getUniquePlacementVals('color');
-    var uniqueShapes = _getUniquePlacementVals('shape');
+    var uniqueColors = this._getUniquePlacementVals('color');
+    var uniqueShapes = this._getUniquePlacementVals('shape');
 
     return uniqueColors.size > 1 &&
            uniqueShapes.size > 1;
