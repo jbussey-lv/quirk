@@ -1,7 +1,7 @@
 class Tile {
 
   static COLORS = ['red', 'organge', 'yellow', 'green', 'blue', 'purple'];
-  static SHAPES = ['circle', 'squre', 'plus', 'clover', 'star', 'burst'];
+  static SHAPES = ['circle', 'square', 'plus', 'clover', 'star', 'burst'];
   static REPEATS = 3;
 
   static getFullSet(){

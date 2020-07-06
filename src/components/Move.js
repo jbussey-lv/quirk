@@ -1,28 +1,22 @@
 class Move {
   
-  status     = 'pending';
-  placements = [];
-  points;
-
   constructor(player, board){
-    this.player = player;
-    this.board = board;
+    this.player     = player;
+    this.board      = board;
+    this.status     = 'pending';
+    this.placements = [];
+    this.points     = null;
+
     this.board.addMove(this);
   }
 
-  overlapsExistingPlacements(placement){
-    var overlaps = false;
-    this.placements.forEach((existingPlacement) => {
-      if(placement.overlaps(existingPlacement)){
-        overlaps = true;
-      }
-    });
-    return overlaps;
+  _overlapsExistingPlacements(placement){
+    return this.board.isSpaceTaken(placement.row, placement.col);
   }
 
   addPlacement(placement){
 
-    if(this.overlapsExistingPlacements(placement)){
+    if(this._overlapsExistingPlacements(placement)){
       throw new Error('You can\'t add placements that overlap others already in the move');
     }
 
@@ -38,8 +32,6 @@ class Move {
       throw new Error('You can\'t remove a placement that doesn\'t exist in the move');
     }
 
-    // TODO: exception if index not in current placements
-    // remov
     var placement = this.placements.splice(index,1)[0];
 
     return placement;
@@ -60,33 +52,23 @@ class Move {
 
   isIllegal(){
     return this._overlapsExistingMoves() ||
-           this._isNonLinear() ||
-           this._hasNoPattern() ||
+           this._isNotLinear() ||
            this._hasNoThroughLine() ||
-           this._breaksExistingPatterns();
+           this.board.isIllegal();
   }
-
+ 
   _overlapsExistingMoves(){
     return this.placements.reduce((memo, placement)=>{
       return memo || this.board.isSpaceTaken(placement.row, placement.col);
     }, false);
   }
 
-  _isNonLinear(){
+  _isNotLinear(){
     var uniqueRows = this._getUniquePlacementVals('row');
     var uniqueCols = this._getUniquePlacementVals('col');
 
     return uniqueCols.size > 1 &&
            uniqueRows.size > 1;
-  }
-
-  _hasNoPattern(){
-
-    var uniqueColors = this._getUniquePlacementVals('color');
-    var uniqueShapes = this._getUniquePlacementVals('shape');
-
-    return uniqueColors.size > 1 &&
-           uniqueShapes.size > 1;
   }
 
   _hasNoThroughLine(){
@@ -97,19 +79,6 @@ class Move {
     return false;
   }
 
-  _getUniquePlacementVals(prop){
-    var fullVals = this.placements.map((placement)=>{
-      placement[prop];
-    });
-    return new Set(fullVals);
-  }
-
-  _getUniqueTileVals(prop){
-    var fullVals = this.placements.map((placement)=>{
-      placement.tile[prop];
-    });
-    return new Set(fullVals);
-  }
 }
 
 module.exports = Move;

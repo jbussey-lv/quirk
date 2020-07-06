@@ -1,44 +1,67 @@
 const assert = require('assert');
 const Move = require('../src/components/Move.js');
-const Player = require('../src/components/Player.js');
 const Placement = require('../src/components/Placement.js');
 const Tile = require('../src/components/Tile.js');
 const Board = require('../src/components/Board.js');
-
-var a = "aaa";
+const MoveBuilder = require('../src/components/MoveBuilder.js');
+const Player = require('../src/components/Player.js');
+const BoardBuilder = require('../src/components/BoardBuilder.js');
 
 
 before(function(){
-  this.moveBuilder = function(placements, board){
-    console.log(s);
-  }
+  this.player = new Player("John Doe");
+  this.redCircleTile = new Tile("red", "circle");
 });
 
 describe('Move', function () {
 
-  beforeEach(function () {
-    const board = new Board();
-    const player = new Player('John');
-    this.move = new Move(player, board);
+  describe('addPlacement()', function() {
+
+    it('should throw error if you try to add tile that overlaps previous play', function() {
+
+      var board = (new BoardBuilder())
+                    .addTile(1, 1, "red", "square")
+                    .build();
+
+      var move = (new MoveBuilder(board))
+                    .build();
+
+      var overlappingPlacement = new Placement(1, 1, this.redCircleTile);
+
+      assert.throws(function(){
+        move.addPlacement(overlappingPlacement);
+      }, Error);
+    });
+
+    it('should throw error if you try to add tile that overlaps other from this move', function() {
+      
+      var move = (new MoveBuilder())
+                    .addTile(1, 1, "red", "square")
+                    .build();
+
+      var overlappingPlacement = new Placement(1, 1, this.redCircleTile);
+
+      assert.throws(function(){
+        move.addPlacement(overlappingPlacement);
+      }, Error);
+        
+    });
+
   });
   
-  describe('isIllegal', function () {
+  describe('isIllegal()', function () {
 
-    it('should return true if not in one line', function () {
+    it('should return true if not linear', function () {
 
-      // this.moveBuilder(4);
+      var move = (new MoveBuilder())
+                  .addTile(3, 0, 'blue', 'square')
+                  .addTile(3, 1, 'blue', 'circle')
+                  .addTile(4, 2, 'blue', 'plus')
+                  .build();
 
-      this.move.addPlacement(
-        new Placement(3, 0, new Tile("blue", "square"))
-      )
-      .addPlacement(
-        new Placement(3, 1, new Tile("blue", "square"))
-      ).addPlacement(
-        new Placement(4, 2, new Tile("blue", "square"))
-      );
-
-      assert.strictEqual(this.move.isIllegal(), true);
+      assert(move.isIllegal());
     });
+
   
 
   });

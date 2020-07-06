@@ -1,3 +1,5 @@
+const { values } = require("lodash");
+
 class Board {
 
   static GRID_WIDTH = 200;
@@ -53,7 +55,49 @@ class Board {
   }
 
   isIllegal(){
-    return this._totalMissmatchesTouching();
+    return this._hasIllegalSequences() ||
+           this._hasDisjointRegions();
+  }
+
+  _hasIllegalSequences(){
+    return this.getSequences().reduce((acc, sequence) => {
+      return acc || sequence.isIllegal();
+    }, false);
+  }
+  
+  _hasDisjointRegions(){
+    return this.getRegions.length > 1;
+  }
+
+  _getRegions(){
+    return 1;
+  }
+
+  _getSequences(){
+    return [];
+  }
+
+  _getUniquePlacementVals(prop){
+    var fullVals = this.placements.map((placement)=>{
+      placement[prop];
+    });
+    return new Set(fullVals);
+  }
+
+  _getUniqueTileVals(prop){
+    var fullVals = this.placements.map((placement)=>{
+      placement.tile[prop];
+    });
+    return new Set(fullVals);
+  }
+
+
+  _hasNoPattern(){
+    var uniqueColors = this._getUniquePlacementVals('color');
+    var uniqueShapes = this._getUniquePlacementVals('shape');
+
+    return uniqueColors.size > 1 &&
+           uniqueShapes.size > 1;
   }
 
   _totalMissmatchesTouching(){
