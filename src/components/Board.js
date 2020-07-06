@@ -60,29 +60,23 @@ class Board {
   }
 
   _hasIllegalSequences(){
-    return this.getSequences().reduce((acc, sequence) => {
+    return this._getSequences().reduce((acc, sequence) => {
       return acc || sequence.isIllegal();
     }, false);
   }
   
   _hasDisjointRegions(){
-    return this.getRegions.length > 1;
+    return this._getRegions.length > 1;
   }
 
   _getRegions(){
-    return 1;
+    return [];
   }
 
   _getSequences(){
     return [];
   }
 
-  _getUniquePlacementVals(prop){
-    var fullVals = this.placements.map((placement)=>{
-      placement[prop];
-    });
-    return new Set(fullVals);
-  }
 
   _getUniqueTileVals(prop){
     var fullVals = this.placements.map((placement)=>{
@@ -98,31 +92,6 @@ class Board {
 
     return uniqueColors.size > 1 &&
            uniqueShapes.size > 1;
-  }
-
-  _totalMissmatchesTouching(){
-    var grid = this.getGrid();
-    var displacements = [{row: 0, col: 1}, {row: 1, col: 0}, {row: 1, col: 1}];
-    var primeCell, adjacentCell;
-
-    for(row = 0; row < Board.GRID_HEIGHT-1; row++){
-      for(col = 0; col < Board.GRID_WIDTH-1; col++){
-        // if this cell is blank... go to next
-        if(!(primeCell = grid[row, col])){continue;}
-
-        for(displacement in displacements){
-
-          // if adjacent cell blank... go to next
-          if(!(adjacentCell = grid[row + displacement.row, col + displacement.col])){continue;}
-
-          // if colors AND shapes mismatch, this is a violation
-          if(adjacentCell.color !== primeCell.color && adjacentCell.color !== primeCell.color){
-            return true;
-          }
-        }
-      }
-    }
-    return false;
   }
 
   _isSpaceOutOfBounds(row, col){

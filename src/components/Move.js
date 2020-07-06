@@ -10,14 +10,10 @@ class Move {
     this.board.addMove(this);
   }
 
-  _overlapsExistingPlacements(placement){
-    return this.board.isSpaceTaken(placement.row, placement.col);
-  }
-
   addPlacement(placement){
 
-    if(this._overlapsExistingPlacements(placement)){
-      throw new Error('You can\'t add placements that overlap others already in the move');
+    if(this.board.isSpaceTaken(placement.row, placement.col)){
+      throw new Error('You can\'t add placements that overlap others');
     }
 
     this.placements.push(placement);
@@ -51,16 +47,9 @@ class Move {
   }
 
   isIllegal(){
-    return this._overlapsExistingMoves() ||
-           this._isNotLinear() ||
+    return this._isNotLinear() ||
            this._hasNoThroughLine() ||
            this.board.isIllegal();
-  }
- 
-  _overlapsExistingMoves(){
-    return this.placements.reduce((memo, placement)=>{
-      return memo || this.board.isSpaceTaken(placement.row, placement.col);
-    }, false);
   }
 
   _isNotLinear(){
@@ -69,6 +58,13 @@ class Move {
 
     return uniqueCols.size > 1 &&
            uniqueRows.size > 1;
+  }
+
+  _getUniquePlacementVals(prop){
+    var fullVals = this.placements.map((placement)=>{
+      return placement[prop];
+    });
+    return new Set(fullVals);
   }
 
   _hasNoThroughLine(){
