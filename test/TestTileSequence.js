@@ -6,7 +6,7 @@ describe('TileSequence', function () {
 
   describe('isIllegal()', function () {
 
-    it('should give say true if no pattern', function () {
+    it('should return true if no pattern', function () {
 
       var tileSequence = (new TileSequenceBuilder())
                              .addTile('red', 'square')
@@ -16,7 +16,7 @@ describe('TileSequence', function () {
       assert(tileSequence.isIllegal());
     });
 
-    it('should give say true if any repeats', function () {
+    it('should return true if any repeats', function () {
 
       var tileSequence = (new TileSequenceBuilder())
                              .addTile('red', 'square')
@@ -27,7 +27,7 @@ describe('TileSequence', function () {
       assert(tileSequence.isIllegal());
     });
 
-    it('should give say false if all one color, all different shapes', function () {
+    it('should return false if all one color, all different shapes', function () {
 
       var tileSequence = (new TileSequenceBuilder())
                               .addTile('red', 'square')
@@ -41,7 +41,7 @@ describe('TileSequence', function () {
       assert.strictEqual(tileSequence.isIllegal(), false);
     });
 
-    it('should give say false if all different colors, all same shapes', function () {
+    it('should return false if all different colors, all same shapes', function () {
 
       var tileSequence = (new TileSequenceBuilder())
                             .addTile('red', 'square')
@@ -55,7 +55,7 @@ describe('TileSequence', function () {
       assert.strictEqual(tileSequence.isIllegal(), false);
     });
 
-    it('should give say false if just one square', function () {
+    it('should return false if just one square', function () {
 
       var tileSequence = (new TileSequenceBuilder())
                             .addTile('red', 'square')
@@ -64,7 +64,7 @@ describe('TileSequence', function () {
       assert.strictEqual(tileSequence.isIllegal(), false);
     });
 
-    it('should give say false if NO tiles', function () {
+    it('should return false if NO tiles', function () {
 
       var tileSequence = (new TileSequenceBuilder())
                              .build();

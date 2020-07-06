@@ -106,5 +106,20 @@ describe('Move', function () {
        assert.strictEqual(move.isIllegal(), false);
     });
 
+    it('should return false if we add disjoint tiles around existing ones', function(){
+
+      var board = (new BoardBuilder())
+                  .addTile(1, 1, 'red', 'circle')
+                  .addTile(1, 2, 'red', 'square')
+                  .build();
+      
+      var move = (new MoveBuilder(board))
+                  .addTile(1, 0, 'red', 'plus')
+                  .addTile(1, 3, 'red', 'clover')
+                  .build();
+      
+       assert.strictEqual(move.isIllegal(), false);
+    });
+
   });
 });
