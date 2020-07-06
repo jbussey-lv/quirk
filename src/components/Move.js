@@ -53,26 +53,38 @@ class Move {
   }
 
   _isNotLinear(){
-    var uniqueRows = this._getUniquePlacementVals('row');
-    var uniqueCols = this._getUniquePlacementVals('col');
 
-    return uniqueCols.size > 1 &&
-           uniqueRows.size > 1;
-  }
+    // if we're empty... we're good
+    if(this.placements.length === 0){return false;}
 
-  _getUniquePlacementVals(prop){
-    var fullVals = this.placements.map((placement)=>{
-      return placement[prop];
-    });
-    return new Set(fullVals);
+    var bounds = this._getBounds();
+
+    return bounds.minRow !== bounds.maxRow &&
+           bounds.minCol !== bounds.maxCol;
   }
 
   _hasNoThroughLine(){
+    
     // figure out whether to traverse row or col
     // figure low and high
     // traverse from low to high and if any spaces found
     //   return true
     return false;
+  }
+
+  _getBounds(){
+    return {
+      minRow: this._getExtreme(Math.min, 'row'),
+      maxRow: this._getExtreme(Math.max, 'row'),
+      minCol: this._getExtreme(Math.min, 'col'),
+      maxCol: this._getExtreme(Math.max, 'col')
+    }
+  }
+
+  _getExtreme(func, prop){
+    return this.placements.reduce((currentMin, placement)=>{
+      return func(currentMin, placement[prop]);
+    }, this.placements[0][prop]);
   }
 
 }
