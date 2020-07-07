@@ -4,14 +4,55 @@ var TileSequenceBuilder = require('../src/components/TileSequenceBuilder.js');
 
 describe('TileSequence', function () {
 
-  beforeEach(function(){
-
-  })
-
 
 
   describe('getPoints', function(){
 
+    it('should return three for three color all different shapes', function(){
+      var tileSequence = (new TileSequenceBuilder())
+                          .addTile('red', 'square')
+                          .addTile('red', 'circle')
+                          .addTile('red', 'plus')
+                          .build();
+
+      assert.equal(tileSequence.getPoints(), 3);
+    });
+
+    it('should return zero if there is a mismatch', function(){
+      var tileSequence = (new TileSequenceBuilder())
+                          .addTile('red', 'square')
+                          .addTile('blue', 'circle')
+                          .addTile('red', 'plus')
+                          .build();
+
+      assert.equal(tileSequence.getPoints(), 0);
+    });
+
+    it('should return twelve if you get all one color six different shapes', function(){
+      var tileSequence = (new TileSequenceBuilder())
+                          .addTile('red', 'square')
+                          .addTile('red', 'circle')
+                          .addTile('red', 'plus')
+                          .addTile('red', 'clover')
+                          .addTile('red', 'star')
+                          .addTile('red', 'burst')
+                          .build();
+
+      assert.equal(tileSequence.getPoints(), 12);
+    });
+
+    it('should return twelve if you get six different colors all one shapes', function(){
+      var tileSequence = (new TileSequenceBuilder())
+                          .addTile('red', 'square')
+                          .addTile('blue', 'square')
+                          .addTile('green', 'square')
+                          .addTile('purple', 'square')
+                          .addTile('yellow', 'square')
+                          .addTile('orange', 'square')
+                          .build();
+
+      assert.equal(tileSequence.getPoints(), 12);
+    });
 
   });
 
