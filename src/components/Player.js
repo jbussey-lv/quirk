@@ -7,30 +7,43 @@ class Player {
     this.handSize = handSize;
   }
 
-  replenishHand(){
-    var numberNeeded  = this.handSize - this.getCount();
-    var numberToTake  = Math.min(numberNeeded, this.bag.getCount());
-    var bagTiles    = this.bag.supply(numberToTake);
+  addTileToMove(move, row, col, handIndex){
+    var tile = hand.returnOneTile(handIndex)
+    move.recieveOneTile(tile, row, col);
+  }
 
-    this.receive(bagTiles);
+  removeTileFromMove(move, moveIndex){
+    var tile = move.returnOneTile(moveIndex);
+    this.hand.receiveOneTile(tile);
+  }
+
+  cancelMove(move){
+    var tiles = move.returnAllTiles();
+    this.hand.receiveManyTiles(tiles);
+  }
+
+  replenishTiles(){
+    var numberNeeded  = this.handSize - hand.getCount();
+    var numberToTake  = Math.min(numberNeeded, this.bag.getCount());
+    var bagTiles      = this.bag.supplyManyRandomTiles(numberToTake);
+
+    this.hand.receiveManyTiles(bagTiles);
   }
 
   tradeTiles(tileIndexes){
 
       // pull the set out of your hand that you want to trade
-      var handTiles = this.hand.supplyMany(tileIndexes);
+      var handTiles = this.hand.supplyManyTiles(tileIndexes);
 
       // pull equal number from bag
-      var bagTiles  = this.bag.supply(tileIndexes.length);
+      var bagTiles  = this.bag.supplyManyRandomTiles(tileIndexes.length);
 
       // put the ones from the bag into our hand
-      this.hand.receive(bagTiles);
+      this.hand.receiveManyTiles(bagTiles);
 
       // put the ones from your hand into the bag
-      this.bag.receive(handTiles);
+      this.bag.receiveManyTiles(handTiles);
   }
-
-
 }
 
 module.exports = Player;

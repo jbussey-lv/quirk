@@ -2,14 +2,14 @@ const TileCollection = require('./TileCollection');
 
 class Hand extends TileCollection{
 
-    supplyOneSpecific(tileIndex){
+    returnOneTile(tileIndex){
 
         if(this._isIndexOutOfBounds(tileIndex)){throw new Error('index out of bounds');}
         
         return this.tiles.splice(tileIndex, 1)[0];
     }
 
-    supplyManySpecific(tileIndexes){
+    returnManyTiles(tileIndexes){
 
         if(this._areIndexesOutOfBounds(tileIndexes)){throw new Error('indexes out of bounds');}
 

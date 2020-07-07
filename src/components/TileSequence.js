@@ -62,11 +62,13 @@ class TileSequence {
   }
 
   static gridToLines(grid){
+    if(grid.length == 0){return [];}
     var lines = [];
     grid.forEach(row => {
       lines.push(row);
-    })
 
+    });
+    return lines;
   }
 
   static lineToSequences(line){

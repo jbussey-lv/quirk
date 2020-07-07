@@ -11,8 +11,12 @@ class TileCollection {
     }
 
     supply(){}
+
+    receiveOne(tile){
+      this.receiveMany([tile]);
+    }
   
-    receive(tiles){
+    receiveMany(tiles){
       this.tiles.push(...tiles);
       return this;
     }

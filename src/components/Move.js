@@ -11,7 +11,7 @@ class Move {
     this.board.addMove(this);
   }
 
-  addPlacement(row, col, tile){
+  receiveOneTile(tile, row, col){
 
     if(this.board.isSpaceTaken(row, col)){
       throw new Error('You can\'t add placements that overlap others');
@@ -24,14 +24,20 @@ class Move {
     return this;
   }
 
-  returnPlacement(index){
+  returnOneTile(index){
 
     // throw error if you try to remove a placement that doesn't exist
     if(index < 0 || index >= this.placements.length){
       throw new Error('You can\'t remove a placement that doesn\'t exist in the move');
     }
 
-    return this.placements.splice(index,1);
+    return this.placements.splice(index,1)[0].tile;
+  }
+
+  returnAllTiles(){
+    return this.placments.splice(0).map(placement => {
+      return placement.tile;
+    });
   }
 
   submit(){
