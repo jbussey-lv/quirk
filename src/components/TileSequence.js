@@ -29,6 +29,45 @@ class TileSequence {
     });
     return new Set(vals);
   }
+
+  static getSequencesFromGrid(grid){
+    var sequences = [];
+    TileSequence.gridToLines(grid).forEach(line => {
+      TileSequence.lineToSqueces(line).forEach(sequence => {
+        sequence.push(sequence);
+      })
+    })
+    return sequences;
+  }
+
+  static gridToLines(grid){
+    var lines = [];
+    grid.forEach(row => {
+      lines.push(row);
+    })
+
+  }
+
+  static lineToSequences(line){
+    var sequences = [];
+    var aggregator = [];
+    line.forEach(tile => {
+      if(tile == null){
+        if(aggregator.length > 1){
+          sequences.push(aggregator.splice(0));
+        }
+        aggregator = [];
+      }else{
+        aggregator.push(tile);
+      }
+    });
+    if(aggregator.length > 1){
+      sequences.push(aggregator.slice(0));
+    }
+    return sequences;
+  }
+
+
 }
 
 module.exports = TileSequence;

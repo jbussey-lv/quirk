@@ -4,6 +4,70 @@ var TileSequenceBuilder = require('../src/components/TileSequenceBuilder.js');
 
 describe('TileSequence', function () {
 
+  beforeEach(function(){
+
+  })
+
+  // describe('gridToSquences', function(){
+
+  //   it('should return 6 seuqnces for tic-tac-toe full', function(){
+
+  //     var grid = [[1,1,1],[1,1,1],[1,1,1]];
+
+  //     assert.equal(TileSequence.getSequencesFromGrid(grid).length, 6);
+  //   });
+
+  //   it('should return 5 seuqnces for tic-tac-toe X', function(){
+
+  //     var grid = [[1,null,1],[null,1,null],[1,null,1]];
+
+  //     assert.equal(TileSequence.getSequencesFromGrid(grid).length, 6);
+  //   });
+
+  // });
+
+  describe('lineToSquences', function(){
+
+    it('should return zero squences for [null, null, null]', function(){
+      var line = [null, null, null];
+      assert.equal(TileSequence.lineToSequences(line).length, 0);
+    });
+    it('should return zero squences for []', function(){
+      var line = [];
+      assert.equal(TileSequence.lineToSequences(line).length, 0);
+    });
+    it('should return zero squences for [null]', function(){
+      var line = [null];
+      assert.equal(TileSequence.lineToSequences(line).length, 0);
+    });
+    it('should return zero sequences for [1]', function(){
+      var line = [1];
+      assert.equal(TileSequence.lineToSequences(line).length, 0);
+    });
+    it('should return zero sequences for [1,null,1,null,1]', function(){
+      var line = [1,null,1,null,1];
+      assert.equal(TileSequence.lineToSequences(line).length, 0);
+    });
+    it('should return one sequence for [1,1,1,1,1]', function(){
+      var line = [1,1,1,1,1];
+      var sequences = TileSequence.lineToSequences(line);
+      assert.equal(sequences.length, 1);
+    });
+    it('should return two sequence for [1,1,1,null,null,1,1,1]', function(){
+      var line = [1,1,1,null,null,1,1,1];
+      assert.equal(TileSequence.lineToSequences(line).length, 2);
+    });
+    it('should return two sequence for [1,1,1,null,null,1,1,1]', function(){
+      var line = [1,1,1,null,null,1,1,1];
+      assert.equal(TileSequence.lineToSequences(line).length, 2);
+    });
+    it('should return two sequence for [null,1,1,1,null,1,1,null,null]', function(){
+      var line = [null,1,1,1,null,1,1,null,null];
+      assert.equal(TileSequence.lineToSequences(line).length, 2);
+    });
+
+  });
+
   describe('isIllegal()', function () {
 
     it('should return true if no pattern', function () {
