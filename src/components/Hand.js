@@ -2,51 +2,26 @@ const TileCollection = require('./TileCollection');
 
 class Hand extends TileCollection{
 
-    constructor(bag, handSize){
-        this.bag        = bag;
-        this.handSize   = handSize;
-        this.replenish();
+    supplyOne(tileIndex){
+        if(this._isIndexOutOfBounds(tileIndex)){throw new Error('index out of bounds');}
+        return this.tiles.splice(tileIndex, 1)[0];
     }
 
-    supply(tileIndexes){
+    supplyMany(tileIndexes){
 
         if(this._areIndexesOutOfBounds(tileIndexes)){throw new Error('indexes out of bounds');}
 
         if(this._areIndexesDuplicated(tileIndexes)){throw new Error('indexes duplicated');}
 
-        var toSupply = [];
-
-        tileIndexes.forEach(tileIndex => {
-            toSupply.push(this.tiles.splice(tileIndex, 1));
+        return tileIndexes.sort().reverse().map(tileIndex => {
+            this.supplyOne(tileIndex);
         });
-
-        return toSupply;
     }
 
-    replenish(){
-        var numberNeeded  = this.handSize - this.getCount();
-        var numberToTake  = Math.min(numberNeeded, this.bag.getCount());
-        var withdrawal    = this.bag.supply(numberToTake);
-
-        this.hand.receive(withdrawal);
+    _isIndexOutOfBounds(tileIndex){
+        return this._areIndexesOutOfBounds([tileIndex]);
     }
 
-    trade(indexes){
-
-        // pull the set out of your hand that you want to trade
-        var handTiles = this.hand.supply(indexes);
-    
-        // pull equal number from bag
-        var bagTiles  = this.bag.supply(indexes.length);
-    
-        // put the ones from the bag into our hand
-        this.hand.receive(bagTiles);
-    
-        // put the ones we wanted to get rid of into the bag
-        this.bag.receive(handTiles);
-    
-      }
-    
     _areIndexesOutOfBounds(tileIndexes){
         return Math.max(...tileIndexes) >= this.getCount() ||
                Math.min(...tileIndexes) < 0;

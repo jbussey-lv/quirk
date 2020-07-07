@@ -11,7 +11,7 @@ const Hand = require("./Hand");
 
 class Game {
 
-    static HAND_SIZE = 6;
+    handSize = 6;
 
     constructor(){
         this.bag     = new Bag(Tile.getFullSet());
@@ -21,13 +21,9 @@ class Game {
     }
 
     addPlayer(name){
-        var hand    = new Hand(this.bag, Game.HAND_SIZE);
+        var hand    = new Hand(this.bag, this.handSize);
         var player  = new Player(name, hand);
         this.players.push(player);
-    }
-
-    startMove(player){
-        return new Move(player, this.board);
     }
 
     

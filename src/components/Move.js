@@ -1,7 +1,9 @@
+const Placement = require('./Placement');
+
 class Move {
   
-  constructor(player, board){
-    this.player     = player;
+  constructor(hand, board){
+    this.hand       = hand;
     this.board      = board;
     this.status     = 'pending';
     this.placements = [];
@@ -10,27 +12,32 @@ class Move {
     this.board.addMove(this);
   }
 
-  addPlacement(placement){
+  addPlacement(row, col, handIndex){
 
-    if(this.board.isSpaceTaken(placement.row, placement.col)){
+    if(this.board.isSpaceTaken(row, col)){
       throw new Error('You can\'t add placements that overlap others');
     }
+
+    var tile = this.hand.supplyOne(handIndex);
+    var placement = new Placement(row, col, tile);
 
     this.placements.push(placement);
 
     return this;
   }
 
-  removePlacment(index){
+  removePlacement(index){
 
     // throw error if you try to remove a placement that doesn't exist
     if(index < 0 || index >= this.placements.length){
       throw new Error('You can\'t remove a placement that doesn\'t exist in the move');
     }
 
-    var placement = this.placements.splice(index,1)[0];
+    var placement = this.placements.splice(index,1);
 
-    return placement;
+    this.hand.receive(placement.tile);
+
+    return this;
   }
 
   submit(){

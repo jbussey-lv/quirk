@@ -5,7 +5,9 @@ class Bag extends TileCollection{
 
   supply(quantity){
 
-    if(quantity > this.getCount()){throw new Error('You can\'t draw more than are in the bag');}
+    if(quantity > this.getCount()){
+      throw new Error('You can\'t draw more than are in the bag');
+    }
 
     shuffle(this.tiles);
 

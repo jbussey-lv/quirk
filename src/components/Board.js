@@ -77,23 +77,6 @@ class Board {
     return [];
   }
 
-
-  _getUniqueTileVals(prop){
-    var fullVals = this.placements.map((placement)=>{
-      placement.tile[prop];
-    });
-    return new Set(fullVals);
-  }
-
-
-  _hasNoPattern(){
-    var uniqueColors = this._getUniquePlacementVals('color');
-    var uniqueShapes = this._getUniquePlacementVals('shape');
-
-    return uniqueColors.size > 1 &&
-           uniqueShapes.size > 1;
-  }
-
   _isSpaceOutOfBounds(row, col){
     return row < 0 ||
            row >= Board.GRID_HEIGHT ||

@@ -4,14 +4,15 @@ const Board = require('./Board.js');
 const Tile = require('./Tile.js');
 const Placement = require('./Placement.js');
 const Move = require('./Move.js');
+const Hand = require('./Hand.js');
+const Bag = require('./Bag.js');
 
 class MoveBuilder {
 
-  constructor(board = null){
-    this.board = board == null ?
-                 new Board() :
-                 board;
+  constructor(board = new Board()){
+    this.board = board;
     this.player = new Player("John Doe");
+    this.hand = new Hand(new Bag(), 6);
     this.placements = [];
   }
 
