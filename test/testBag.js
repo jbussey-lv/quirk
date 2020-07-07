@@ -14,7 +14,7 @@ describe('Bag', function () {
       var lastDraw = null;
       for(let i = 0; i < 10; i++){
 
-        var thisDraw = bag.supply(1)[0];
+        var thisDraw = bag.supplyManyRandom(1)[0];
         if(i>0 && lastDraw !== thisDraw){
           different = true;
         }
@@ -24,19 +24,19 @@ describe('Bag', function () {
     });
   });
 
-  describe('drawTiles()', function () {
+  describe('supplyManyRandom()', function () {
 
     it('should return an array', function () {
-      assert(Array.isArray(bag.supply()));
+      assert(Array.isArray(bag.supplyManyRandom()));
     });
 
     it('should return array length 3 when called with arg 3', function () {
-      var drawnTiles = bag.supply(3);
+      var drawnTiles = bag.supplyManyRandom(3);
       assert.equal(drawnTiles.length, 3);
     });
 
     it('should return empty array when called with no args', function () {
-      assert.equal(bag.supply().length, 0);
+      assert.equal(bag.supplyManyRandom().length, 0);
     });
 
     it('should throw exception when we try to draw more than it has', function () {

@@ -2,19 +2,21 @@ const TileCollection = require('./TileCollection');
 
 class Hand extends TileCollection{
 
-    supplyOne(tileIndex){
+    supplyOneSpecific(tileIndex){
+
         if(this._isIndexOutOfBounds(tileIndex)){throw new Error('index out of bounds');}
+        
         return this.tiles.splice(tileIndex, 1)[0];
     }
 
-    supplyMany(tileIndexes){
+    supplyManySpecific(tileIndexes){
 
         if(this._areIndexesOutOfBounds(tileIndexes)){throw new Error('indexes out of bounds');}
 
         if(this._areIndexesDuplicated(tileIndexes)){throw new Error('indexes duplicated');}
 
         return tileIndexes.sort().reverse().map(tileIndex => {
-            this.supplyOne(tileIndex);
+            return this.supplyOneSpecific(tileIndex);
         });
     }
 

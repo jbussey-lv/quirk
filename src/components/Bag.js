@@ -3,7 +3,7 @@ const TileCollection = require('./TileCollection');
 
 class Bag extends TileCollection{
 
-  supply(quantity){
+  supplyManyRandom(quantity){
 
     if(quantity > this.getCount()){
       throw new Error('You can\'t draw more than are in the bag');
