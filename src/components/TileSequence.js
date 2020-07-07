@@ -1,3 +1,5 @@
+var Tile = require('./Tile.js');
+
 class TileSequence {
 
   constructor(tiles){
@@ -9,8 +11,21 @@ class TileSequence {
            this._hasRepeats();
   }
 
-  _hasNoPattern(){
+  getPoints(){
+    if(this.isIllegal()){return 0;}
 
+    var points = this.tiles.length;
+
+    if(this._getUniqueVals('color').size === Tile.COLORS.length){
+      points += Tile.COLORS.length;
+    }
+
+    if(this._getUniqueVals('shape').size === Tile.SHAPES.length){
+      points += Tile.SHAPES.length;
+    }
+  }
+
+  _hasNoPattern(){
     return this._getUniqueVals('color').size > 1 &&
            this._getUniqueVals('shape').size > 1;
   }

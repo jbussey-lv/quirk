@@ -1,8 +1,16 @@
 class Tile {
 
-  static COLORS = ['red', 'organge', 'yellow', 'green', 'blue', 'purple'];
+  static COLORS = ['red', 'orange', 'yellow', 'green', 'blue', 'purple'];
   static SHAPES = ['circle', 'square', 'plus', 'clover', 'star', 'burst'];
   static REPEATS = 3;
+
+  constructor(color, shape) {
+    if(!Tile.COLORS.includes(color) || !Tile.SHAPES.includes(shape)){
+      throw new Error('You can\'t create with a color or shape undefined for the class: ' + color + ' - ' + shape);
+    }
+    this.color = color;
+    this.shape = shape;
+  }
 
   static getFullSet(){
     var tiles = [];
@@ -18,11 +26,6 @@ class Tile {
 
   static getMaxLineLength(){
     return Math.max(Tile.COLORS.length, Tile.SHAPES.length);
-  }
-
-  constructor(color, shape) {
-    this.color = color;
-    this.shape = shape;
   }
 }
 
