@@ -8,23 +8,13 @@ describe('TileSequence', function () {
 
   })
 
-  // describe('gridToSquences', function(){
 
-  //   it('should return 6 seuqnces for tic-tac-toe full', function(){
 
-  //     var grid = [[1,1,1],[1,1,1],[1,1,1]];
+  describe('getPoints', function(){
 
-  //     assert.equal(TileSequence.getSequencesFromGrid(grid).length, 6);
-  //   });
 
-  //   it('should return 5 seuqnces for tic-tac-toe X', function(){
+  });
 
-  //     var grid = [[1,null,1],[null,1,null],[1,null,1]];
-
-  //     assert.equal(TileSequence.getSequencesFromGrid(grid).length, 6);
-  //   });
-
-  // });
 
   describe('lineToSquences', function(){
 
@@ -119,21 +109,19 @@ describe('TileSequence', function () {
       assert.strictEqual(tileSequence.isIllegal(), false);
     });
 
-    it('should return false if just one square', function () {
+    it('should throw an error if just one tile', function () {
 
-      var tileSequence = (new TileSequenceBuilder())
-                            .addTile('red', 'square')
-                             .build();
+      var builder = (new TileSequenceBuilder())
+                            .addTile('red', 'square');
 
-      assert.strictEqual(tileSequence.isIllegal(), false);
+      assert.throws(function(){builder.build()}, Error);
     });
 
-    it('should return false if NO tiles', function () {
+    it('should throw an error if no tiles', function () {
 
-      var tileSequence = (new TileSequenceBuilder())
-                             .build();
+      var builder = (new TileSequenceBuilder());
 
-      assert.strictEqual(tileSequence.isIllegal(), false);
+      assert.throws(function(){builder.build()}, Error);
     });
 
   });

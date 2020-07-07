@@ -3,6 +3,10 @@ var Tile = require('./Tile.js');
 class TileSequence {
 
   constructor(tiles){
+
+    if(tiles.length < 2){
+      throw new Error('sequences must be at least two element long');
+    }
     this.tiles = tiles;
   }
 
@@ -23,6 +27,8 @@ class TileSequence {
     if(this._getUniqueVals('shape').size === Tile.SHAPES.length){
       points += Tile.SHAPES.length;
     }
+
+    return points;
   }
 
   _hasNoPattern(){
