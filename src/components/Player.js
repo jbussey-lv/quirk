@@ -1,8 +1,10 @@
 class Player {
 
-  constructor(name){
-    this.name = name;
+  constructor(name, bag, hand, handSize){
+    this.name     = name;
+    this.hand     = hand
   }
+
 
 }
 
