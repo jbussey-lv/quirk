@@ -3,6 +3,10 @@ const TileCollection = require('./TileCollection');
 
 class Bag extends TileCollection{
 
+  constructor(tiles = Tile.getFullSet()){
+    this.tiles = tiles;
+  }
+
   supplyManyRandomTiles(quantity){
 
     if(quantity > this.getCount()){

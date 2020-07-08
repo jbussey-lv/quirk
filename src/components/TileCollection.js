@@ -3,7 +3,7 @@ class TileCollection {
     tiles = [];
 
     constructor(tiles=[]){
-      this.receive(tiles);
+      this.receiveManyTiles(tiles);
     }
   
     getCount(){
@@ -12,11 +12,11 @@ class TileCollection {
 
     supply(){}
 
-    receiveOne(tile){
+    receiveOneTile(tile){
       this.receiveMany([tile]);
     }
   
-    receiveMany(tiles){
+    receiveManyTiles(tiles){
       this.tiles.push(...tiles);
       return this;
     }

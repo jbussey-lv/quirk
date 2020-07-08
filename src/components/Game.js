@@ -7,22 +7,20 @@ const Move      = require('./Move.js');
 const Bag       = require('./Bag.js');
 const Player    = require('./Player.js');
 const Tile      = require('./Tile.js');
-const Hand = require("./Hand");
 
 class Game {
 
     handSize = 6;
 
     constructor(){
-        this.bag     = new Bag(Tile.getFullSet());
+        this.bag     = new Bag();
         this.board   = new Board();
         this.players = [];
         this.moves   = [];
     }
 
     addPlayer(name){
-        var hand    = new Hand(this.bag, this.handSize);
-        var player  = new Player(name, hand);
+        var player  = new Player(name, this.bag, this.handSize);
         this.players.push(player);
     }
 

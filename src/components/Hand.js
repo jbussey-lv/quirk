@@ -16,7 +16,7 @@ class Hand extends TileCollection{
         if(this._areIndexesDuplicated(tileIndexes)){throw new Error('indexes duplicated');}
 
         return tileIndexes.sort().reverse().map(tileIndex => {
-            return this.supplyOneSpecific(tileIndex);
+            return this.returnOneTile(tileIndex);
         });
     }
 

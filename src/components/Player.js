@@ -1,10 +1,14 @@
+const Hand = require("./Hand");
+
 class Player {
 
-  constructor(name, bag, hand, handSize){
+  constructor(name, bag, handSize){
     this.name     = name;
     this.bag      = bag;
-    this.hand     = hand;
+    this.hand     = new Hand();
     this.handSize = handSize;
+
+    this.replenishTiles();
   }
 
   addTileToMove(move, row, col, handIndex){
