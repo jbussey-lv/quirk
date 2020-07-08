@@ -4,6 +4,85 @@ var TileSequenceBuilder = require('../src/components/TileSequenceBuilder.js');
 
 describe('TileSequence', function () {
 
+  describe('GridToLines()', function(){
+
+    it('should give back six lines for 3x3 array', function(){
+
+      var grid = [[1,2,3],[1,2,3],[1,2,3]];
+
+      var lines = TileSequence.gridToLines(grid);
+
+      assert.equal(lines.length, 6);
+
+    });
+
+    it('should return 2 lines for 1 x 1 array', function(){
+
+      var grid = [[1]];
+
+      var lines = TileSequence.gridToLines(grid);
+
+      assert.equal(lines.length, 2);
+
+    });
+
+    it('should give back proper result for 2 x 2 array', function(){
+
+      var grid = [[1,2],[1,2]];
+
+      var lines = TileSequence.gridToLines(grid);
+
+      var hoped = [[1,2],[1,2],[1,1],[2,2]];
+
+      assert.equal(JSON.stringify(lines), JSON.stringify(hoped));
+
+    });
+  });
+
+
+  describe('gridToSequences()', function(){
+
+    it('should give back three sequences for an H grid', function(){
+
+      var grid = [[1,null,3],[4,5,6],[7,null,9]];
+
+      var sequences = TileSequence.gridToSequences(grid);
+
+      assert.equal(sequences.length, 3);
+
+    });
+
+    it('should give back two sequences for an T grid', function(){
+
+      var grid = [[1,2,3],[null,5,null],[7,8,9]];
+
+      var sequences = TileSequence.gridToSequences(grid);
+
+      assert.equal(sequences.length, 3);
+
+    });
+
+    it('should give back two sequences for an + grid', function(){
+
+      var grid = [[null,2,null],[4,5,6],[null,8,null]];
+
+      var sequences = TileSequence.gridToSequences(grid);
+
+      assert.equal(sequences.length, 2);
+
+    });
+
+    it('should give back 5 sequences for a double row', function(){
+
+      var grid = [[1,2,3],[4,5,6],[null,null,null]];
+
+      var sequences = TileSequence.gridToSequences(grid);
+
+      assert.equal(sequences.length, 5);
+
+    });
+  });
+
 
 
   describe('getPoints', function(){

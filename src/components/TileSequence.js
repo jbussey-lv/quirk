@@ -51,11 +51,11 @@ class TileSequence {
     return new Set(vals);
   }
 
-  static getSequencesFromGrid(grid){
+  static gridToSequences(grid){
     var sequences = [];
     TileSequence.gridToLines(grid).forEach(line => {
-      TileSequence.lineToSqueces(line).forEach(sequence => {
-        sequence.push(sequence);
+      TileSequence.lineToSequences(line).forEach(sequence => {
+        sequences.push(sequence);
       })
     })
     return sequences;
@@ -63,11 +63,15 @@ class TileSequence {
 
   static gridToLines(grid){
     if(grid.length == 0){return [];}
-    var lines = [];
-    grid.forEach(row => {
-      lines.push(row);
 
-    });
+    var lines = Array(...grid);
+    var cols = grid[0].map((_, colIndex) => 
+      grid.map(row => 
+        row[colIndex]
+      )
+    );
+    lines.push(...cols);
+
     return lines;
   }
 
