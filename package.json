@@ -1,6 +1,12 @@
 {
   "dependencies": {
-    "mocha": "^8.0.1",
+    "lodash": "^4.17.20",
     "shuffle-array": "^1.0.1"
+  },
+  "devDependencies" : {
+    "mocha": "^8.2.1"
+  },
+  "scripts": {
+    "test": "mocha"
   }
 }
