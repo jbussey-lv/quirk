@@ -4,6 +4,7 @@ const TileCollection = require('./TileCollection');
 class Bag extends TileCollection{
 
   constructor(tiles = Tile.getFullSet()){
+    super();
     this.tiles = tiles;
   }
 
