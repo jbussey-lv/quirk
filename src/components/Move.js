@@ -1,37 +1,34 @@
-const Placement = require('./Placement');
+import Placement from './Placement.js';
 
-class Move {
+export const STATUSES = {
+  PENDING: 'pending',
+  COMPLETE: 'complete'
+}
+
+export default class Move {
   
-  constructor(board){
-    this.board      = board;
-    this.status     = 'pending';
+  constructor(){
     this.placements = [];
-    this.points     = null;
-
-    this.board.addMove(this);
+    this.status     = STATUSES.PENDING;
+    this.points     = 0;
   }
 
-  receiveOneTile(tile, row, col){
-
-    if(this.board.isSpaceTaken(row, col)){
-      throw new Error('You can\'t add placements that overlap others');
+  addTile(row, col, tile){
+    if(this.__placementExists(row, col)){
+      throw new Error('You can\'t put two tiles in the same position');
     }
-
     var placement = new Placement(row, col, tile);
-
     this.placements.push(placement);
-
     return this;
   }
 
-  returnOneTile(index){
-
-    // throw error if you try to remove a placement that doesn't exist
-    if(index < 0 || index >= this.placements.length){
-      throw new Error('You can\'t remove a placement that doesn\'t exist in the move');
+  returnTile(row, col){
+    if(!this.__placementExists(row, col)){
+      throw new Error('Move has no tile at that position');
     }
 
-    return this.placements.splice(index,1)[0].tile;
+    let placementIndex = this.__placementIndex(row, col);
+    return this.placements.splice(placementIndex,1)[0].tile;
   }
 
   returnAllTiles(){
@@ -40,65 +37,18 @@ class Move {
     });
   }
 
-  submit(){
-
-    if(this.isIllegal()){
-      throw new Error('That move is illegal move');
-    }
-    this.status = 'submitted';
-    this.points = this.getPotentialPoints();
-  }
-
-  getPotentialPoints(){
-    return 5;
-  }
-
-  isIllegal(){
-    return this._hasNoThroughLine() ||
-           this.board.isIllegal();
-  }
-
-  _hasNoThroughLine(){
-
-    if(this.placements.length === 0){return false;}
-
-    var bounds = this._getBounds();
-    var colDiff = 0;
-    var rowDiff = 0;
-
-    if(bounds.minCol === bounds.maxCol){rowDiff = 1;}
-    else if(bounds.minRow === bounds.maxRow){colDiff = 1;}
-    else{return true;} // this means they're non-linear}
-
-    var col = bounds.minCol;
-    var row = bounds.minRow;
-    while(row <= bounds.maxRow && col <= bounds.maxCol ){
-      if(!this.board.isSpaceTaken(row, col)){
-        return true;
+  __placementIndex(row, col){
+    for(let i = 0; i < this.placements.length; i++){
+      if(this.placements[i].hasCoords(row, col)){
+        return i;
       }
-
-      row += rowDiff;
-      col += colDiff;
     }
-
-    return false;
+    return -1;
   }
 
-  _getBounds(){
-    return {
-      minRow: this._getExtreme(Math.min, 'row'),
-      maxRow: this._getExtreme(Math.max, 'row'),
-      minCol: this._getExtreme(Math.min, 'col'),
-      maxCol: this._getExtreme(Math.max, 'col')
-    }
+  __placementExists(row, col){
+    return this.__placementIndex(row, col) !== -1;
   }
 
-  _getExtreme(func, prop){
-    return this.placements.reduce((currentMin, placement)=>{
-      return func(currentMin, placement[prop]);
-    }, this.placements[0][prop]);
-  }
 
 }
-
-module.exports = Move;

@@ -33,7 +33,6 @@ describe('Tile', function () {
   describe('getFullSet() fuction', function () {
     it('gets correct number of tiles for full set', function() {
       let tiles = getFullSet();
-      console.log(tiles);
       let expectedCount = Object.keys(COLORS).length
                         * Object.keys(SHAPES).length
                         * REPEATS;
