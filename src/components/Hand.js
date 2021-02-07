@@ -1,34 +1,30 @@
-const TileCollection = require('./TileCollection');
+import TileCollection from './TileCollection.js';
 
-class Hand extends TileCollection{
+const MAX_SIZE = 6;
 
-    returnOneTile(tileIndex){
+export default class Hand extends TileCollection{
 
-        
-        return this.tiles.splice(tileIndex, 1)[0];
+  addTile(tile){
+
+    if(this._violatesMaxSize([tile])){
+      throw new Error('would add beyond max hand size');
     }
 
-    returnManyTiles(tileIndexes){
+    super.addTile(tile);
+  }
 
-        if(this._areIndexesOutOfBounds(tileIndexes)){throw new Error('indexes out of bounds');}
+  addManyTiles(tiles){
 
-        if(this._areIndexesDuplicated(tileIndexes)){throw new Error('indexes duplicated');}
-
-        return tileIndexes.sort().reverse().map(tileIndex => {
-            return this.returnOneTile(tileIndex);
-        });
+    if(this._violatesMaxSize(tiles)){
+      throw new Error('would add beyond max hand size');
     }
 
-    _areIndexesOutOfBounds(tileIndexes){
-        return Math.max(...tileIndexes) >= this.getCount() ||
-               Math.min(...tileIndexes) < 0;
+    super.addManyTiles(tiles);
+  }
 
-    }
-
-    _areIndexesDuplicated(tileIndexes){
-        return (new Set(tileIndexes)).size < tileIndexes.length;
-    }
+  _violatesMaxSize(tiles){
+    // console.log(this.getCount(), this.tiles.length, tiles.length, MAX_SIZE);
+    this.getCount() + tiles.length > MAX_SIZE;
+  }
 
 }
-
-module.exports = Hand;

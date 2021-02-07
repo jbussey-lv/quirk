@@ -1,57 +1,84 @@
-var assert = require('assert');
-var Bag = require('../src/components/Bag.js');
-var Hand = require('../src/components/Hand.js');
+import { strict as assert } from 'assert';
+import Hand from '../src/components/Hand.js';
 
 beforeEach(function(){
-  this.hand = new Hand([1,2,3,4,5,6]);
+  this.fullHand = new Hand([1,2,3,4,5,6]);
+  this.halfHand = new Hand([1,2,3]);
+  this.emptyHand = new Hand();
 });
 
 describe('Hand', function(){
 
-  describe('returnOneTile()', function() {
+  describe('getCount()', function(){
+
+    it('should return proper tile count', function(){
+      assert.equal(this.fullHand.getCount(), 6);
+      assert.equal(this.halfHand.getCount(), 3);
+      assert.equal(this.emptyHand.getCount(), 0);
+    });
+
+  });
+
+  describe('addTile()', function(){
+
+    it('should throw error if you add tile when already at max size', function(){
+      this.fullHand.addTile(7);
+    });
+
+    it('should bump size by one if you add validly', function(){
+      this.halfHand.addTile(9);
+      assert.equal(this.halfHand.getCount(), 4);
+    });
+
+    it('should have addition appear in hand', function(){
+      this.halfHand.addTile(9);
+      assert(this.halfHand.getTiles().includes(9))
+    });
+
+  });
+
+  describe('addManyTiles()', function(){
+
+    it('should throw error if you add tile when already at max size', function(){
+      this.fullHand.addManyTiles([7, 8]);
+    });
+
+    it('should bump size by number added', function(){
+      this.halfHand.addManyTiles([7, 8]);
+      assert.equal(this.halfHand.getCount(), 5);
+    });
+
+    it('should have addition appear in hand', function(){
+      this.halfHand.addManyTiles([7, 8]);
+      assert(this.halfHand.getTiles().includes(7));
+      assert(this.halfHand.getTiles().includes(8));
+    });
+
+  });
+
+  describe('returnTile()', function() {
 
     it('should gives you the element you specify', function() {
-       assert.strictEqual(this.hand.returnOneTile(3), 4);
+       assert.strictEqual(this.fullHand.returnTile(3), 4);
     });
 
     it('should should shrink in size by one', function() {
-      this.hand.returnOneTile(3);
-      assert.strictEqual(this.hand.getCount(), 5);
+      this.fullHand.returnTile(3);
+      assert.strictEqual(this.fullHand.getCount(), 5);
     });
 
     it('should throw an error if you ask for an index that is too high', function() {
-      // this.hand.returnOneTile(3);
-      assert.throws(()=>{this.hand.returnOneTile(6);}, Error);
+      assert.throws(function(){
+        let tile = this.fullHand.returnTile(6);
+      }, Error);
     });
 
     it('should throw an error if you ask for an index that is too low', function() {
-      assert.throws(()=>{this.hand.returnOneTile(-1);}, Error);
-    });
-  });
-
-  describe('returnManyTiles()', function() {
-
-    it('should gives you the elements you specify', function() {
-      var supplied = this.hand.returnManyTiles([2,4])
-      assert.equal(JSON.stringify(supplied.sort()), JSON.stringify([3,5]));
+      assert.throws(function(){
+        let tile = this.fullHand.returnTile(-1);
+      }, Error);
     });
 
-    it('should give you nothing if you pass in empty array', function(){
-      assert.equal(this.hand.returnManyTiles([]).length, 0);
-    });
-
-    it('should should shrink in size by how man drawn', function() {
-      this.hand.returnManyTiles([1,2,3]);
-      assert.equal(this.hand.getCount(), 3);
-    });
-
-    it('should throw an error if you ask for duplicates', function() {
-      assert.throws(()=>{this.hand.supplyManySpecific([1,2,2]);}, Error);
-    });
-
-    it('should throw an error if you ask for an index that is out of bounds', function() {
-      assert.throws(()=>{this.hand.supplyManySpecific([3,4,5,6]);}, Error);
-    });
   });
 
 });
