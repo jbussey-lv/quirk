@@ -1,33 +1,46 @@
-class Tile {
+export const COLORS = {
+  RED: 'red',
+  ORANGE: 'orange', 
+  YELLOW: 'yellow',
+  GREEN: 'green',
+  BLUE: 'blue',
+  PURPLE: 'purple'
+};
 
-  static COLORS = ['red', 'orange', 'yellow', 'green', 'blue', 'purple'];
-  static SHAPES = ['circle', 'square', 'plus', 'clover', 'star', 'burst'];
-  static REPEATS = 3;
+export const SHAPES = {
+  CIRCLE: 'circle', 
+  SQUARE: 'square', 
+  PLUS: 'plus', 
+  CLOVER: 'clover',
+  STAR: 'star',
+  BURST: 'burst'
+}
 
-  constructor(color, shape) {
-    if(!Tile.COLORS.includes(color) || !Tile.SHAPES.includes(shape)){
-      throw new Error('You can\'t create with a color or shape undefined for the class: ' + color + ' - ' + shape);
+export const REPEATS = 3;
+
+export function getFullSet(){
+  let tiles = [];
+  for(const color of Object.values(COLORS)){
+    for(const shape of Object.values(SHAPES)){
+      for(let i = 0; i < REPEATS; i++){
+        tiles.push(new Tile(color, shape));
+      }
     }
+  }
+  return tiles;
+}
+
+
+export default class Tile {
+
+  constructor(color, shape){
     this.color = color;
     this.shape = shape;
   }
 
-  static getFullSet(){
-    var tiles = [];
-    Tile.COLORS.forEach(color => {
-      Tile.SHAPES.forEach(shape => {
-        for(let r = 0;  r < Tile.REPEATS; r++){
-          tiles.push(new Tile(color, shape));
-        }
-      });
-    });
-    return tiles;
+  matches(tile){
+    return this.color === tile.color &&
+           this.shape === tile.shape;
   }
 
-  static getMaxLineLength(){
-    return Math.max(Tile.COLORS.length, Tile.SHAPES.length);
-  }
 }
-
-
-module.exports = Tile;
