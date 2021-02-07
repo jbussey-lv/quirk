@@ -4,7 +4,6 @@ class Hand extends TileCollection{
 
     returnOneTile(tileIndex){
 
-        if(this._isIndexOutOfBounds(tileIndex)){throw new Error('index out of bounds');}
         
         return this.tiles.splice(tileIndex, 1)[0];
     }
@@ -18,10 +17,6 @@ class Hand extends TileCollection{
         return tileIndexes.sort().reverse().map(tileIndex => {
             return this.returnOneTile(tileIndex);
         });
-    }
-
-    _isIndexOutOfBounds(tileIndex){
-        return this._areIndexesOutOfBounds([tileIndex]);
     }
 
     _areIndexesOutOfBounds(tileIndexes){

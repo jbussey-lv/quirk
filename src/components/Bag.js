@@ -1,14 +1,13 @@
-var shuffle = require('shuffle-array');
-const TileCollection = require('./TileCollection');
+import shuffle from 'shuffle-array';
+import TileCollection from './TileCollection.js'
 
-class Bag extends TileCollection{
+export default class Bag extends TileCollection{
 
   constructor(tiles = Tile.getFullSet()){
-    super();
-    this.tiles = tiles;
+    super(tiles);
   }
 
-  supplyManyRandomTiles(quantity){
+  drawTiles(quantity){
 
     if(quantity > this.getCount()){
       throw new Error('You can\'t draw more than are in the bag');
@@ -16,9 +15,13 @@ class Bag extends TileCollection{
 
     shuffle(this.tiles);
 
-    return this.tiles.splice(0, quantity);
+    return this.returnManyTiles(quantity);
+  }
+
+  tradeTiles(tiles){
+    let response = this.drawTiles(tiles.length);
+    this.addManyTiles(tiles);
+    return response;
   }
 
 }
-
-module.exports = Bag;
