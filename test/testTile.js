@@ -3,7 +3,7 @@ import Tile, {COLORS, SHAPES, REPEATS, getFullSet} from '../src/components/Tile.
 
 describe('Tile', function () {
 
-  describe('Tile Class', function () {
+  describe('Tile Object', function () {
 
     it('should equate like tiles', function() {
       let tile1 = new Tile(COLORS.RED, SHAPES.SQUARE);
@@ -33,6 +33,7 @@ describe('Tile', function () {
   describe('getFullSet() fuction', function () {
     it('gets correct number of tiles for full set', function() {
       let tiles = getFullSet();
+      console.log(tiles);
       let expectedCount = Object.keys(COLORS).length
                         * Object.keys(SHAPES).length
                         * REPEATS;

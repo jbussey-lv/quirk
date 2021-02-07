@@ -30,7 +30,6 @@ export function getFullSet(){
   return tiles;
 }
 
-
 export default class Tile {
 
   constructor(color, shape){
