@@ -1,7 +1,7 @@
-const TileSequence = require('./TileSequence.js');
-const Tile = require('./Tile.js');
+import TileSequence from './TileSequence.js';
+import Tile from './Tile.js';
 
-class TileSequenceBuilder {
+export default class TileSequenceBuilder {
 
   constructor(){
     this.tiles = [];
@@ -16,5 +16,3 @@ class TileSequenceBuilder {
     return new TileSequence(this.tiles);
   }
 }
-
-module.exports = TileSequenceBuilder;

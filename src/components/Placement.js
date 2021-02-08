@@ -5,7 +5,11 @@ export default class Placement {
     this.tile = tile;
   }
 
-  hasCoords(row, tile){
-    return this.row == row && this.col == this.col;
+  hasCoords(row, col){
+    return this.row === row && this.col === col;
+  }
+
+  matches(placement){
+    return this.hasCoords(placement.row, placement.col);
   }
 }

@@ -23,8 +23,7 @@ export default class Hand extends TileCollection{
   }
 
   _violatesMaxSize(tiles){
-    // console.log(this.getCount(), this.tiles.length, tiles.length, MAX_SIZE);
-    this.getCount() + tiles.length > MAX_SIZE;
+    return this.getCount() + tiles.length > MAX_SIZE;
   }
 
 }

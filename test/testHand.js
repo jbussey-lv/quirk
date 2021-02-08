@@ -20,9 +20,11 @@ describe('Hand', function(){
   });
 
   describe('addTile()', function(){
-
+    
     it('should throw error if you add tile when already at max size', function(){
-      this.fullHand.addTile(7);
+      assert.throws(()=>{
+        this.fullHand.addTile(9);
+      }, Error);
     });
 
     it('should bump size by one if you add validly', function(){
@@ -40,7 +42,9 @@ describe('Hand', function(){
   describe('addManyTiles()', function(){
 
     it('should throw error if you add tile when already at max size', function(){
-      this.fullHand.addManyTiles([7, 8]);
+      assert.throws(()=>{
+        this.fullHand.addManyTiles([7, 8]);
+      }, Error);
     });
 
     it('should bump size by number added', function(){
@@ -68,13 +72,13 @@ describe('Hand', function(){
     });
 
     it('should throw an error if you ask for an index that is too high', function() {
-      assert.throws(function(){
-        let tile = this.fullHand.returnTile(6);
+      assert.throws(()=>{
+        let tile = this.fullHand.returnTile(7);
       }, Error);
     });
 
     it('should throw an error if you ask for an index that is too low', function() {
-      assert.throws(function(){
+      assert.throws(()=>{
         let tile = this.fullHand.returnTile(-1);
       }, Error);
     });

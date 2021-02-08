@@ -1,6 +1,10 @@
-var Tile = require('./Tile.js');
+import Tile, { COLORS, SHAPES } from './Tile.js';
 
-class TileSequence {
+const COLORS_LENGTH = Object.keys(COLORS).length;
+const SHAPES_LENGTH = Object.keys(SHAPES).length;
+
+export default class TileSequence {
+
 
   constructor(tiles){
 
@@ -20,15 +24,23 @@ class TileSequence {
 
     var points = this.tiles.length;
 
-    if(this._getUniqueVals('color').size === Tile.COLORS.length){
-      points += Tile.COLORS.length;
+    if(this._getColorCount() === COLORS_LENGTH){
+      points += COLORS_LENGTH;
     }
 
-    if(this._getUniqueVals('shape').size === Tile.SHAPES.length){
-      points += Tile.SHAPES.length;
+    if(this._getShapeCount() === SHAPES_LENGTH){
+      points += SHAPES_LENGTH;
     }
 
     return points;
+  }
+
+  _getColorCount(){
+    return this._getUniqueVals('color').size;
+  }
+
+  _getShapeCount(){
+    return this._getUniqueVals('shape').size;
   }
 
   _hasNoPattern(){
@@ -51,50 +63,4 @@ class TileSequence {
     return new Set(vals);
   }
 
-  static gridToSequences(grid){
-    var sequences = [];
-    TileSequence.gridToLines(grid).forEach(line => {
-      TileSequence.lineToSequences(line).forEach(sequence => {
-        sequences.push(sequence);
-      })
-    })
-    return sequences;
-  }
-
-  static gridToLines(grid){
-    if(grid.length == 0){return [];}
-
-    var lines = Array(...grid);
-    var cols = grid[0].map((_, colIndex) => 
-      grid.map(row => 
-        row[colIndex]
-      )
-    );
-    lines.push(...cols);
-
-    return lines;
-  }
-
-  static lineToSequences(line){
-    var sequences = [];
-    var aggregator = [];
-    line.forEach(tile => {
-      if(tile == null){
-        if(aggregator.length > 1){
-          sequences.push(aggregator.splice(0));
-        }
-        aggregator = [];
-      }else{
-        aggregator.push(tile);
-      }
-    });
-    if(aggregator.length > 1){
-      sequences.push(aggregator.slice(0));
-    }
-    return sequences;
-  }
-
-
 }
-
-module.exports = TileSequence;

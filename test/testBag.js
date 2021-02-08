@@ -47,7 +47,9 @@ describe('Bag', function () {
     });
 
     it('should throw exception when we try to draw more than it has', function () {
-      assert.throws(function(){bag.drawTiles(1000)}, Error);
+      assert.throws(()=>{
+        bag.drawTiles(1000)
+      }, Error);
     });
   });
 
@@ -55,17 +57,13 @@ describe('Bag', function () {
 
     it('should return as many as supplied', function(){
       let tradeIns = [11, 12, 13];
-      let count = bag.getCount();
       let draw = bag.tradeTiles(tradeIns);
-      let newCount = bag.getCount();
-      assert.equal(count, newCount);
+      assert.equal(tradeIns.length, draw.length);
     });
 
     it('should return none of the same as supplied', function(){
       let tradeIns = [11, 12, 13];
-      console.log(bag.tiles);
       let draws = bag.tradeTiles(tradeIns);
-      console.log(bag.tiles);
       let overlap = tradeIns.filter(value => draws.includes(value));
       assert.equal(overlap.length, 0);
     });
@@ -73,9 +71,8 @@ describe('Bag', function () {
     it('should not allow trading in more than bag contains', function(){
       let bag = new Bag([1,2,3]);
       let tradeIns = [4,5,6,7];
-      
-      assert.throws(function(){
-        draws = bag.tradeTiles(tradeIns);
+      assert.throws(()=>{
+        bag.tradeTiles(tradeIns);
       }, Error);
     });
 

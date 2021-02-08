@@ -50,5 +50,4 @@ export default class Move {
     return this.__placementIndex(row, col) !== -1;
   }
 
-
 }
