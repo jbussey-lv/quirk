@@ -1,0 +1,20 @@
+{
+  "files": {
+    "main.css": "/quirk/static/css/main.fdb6854f.chunk.css",
+    "main.js": "/quirk/static/js/main.3382cfa1.chunk.js",
+    "main.js.map": "/quirk/static/js/main.3382cfa1.chunk.js.map",
+    "runtime-main.js": "/quirk/static/js/runtime-main.904f12cd.js",
+    "runtime-main.js.map": "/quirk/static/js/runtime-main.904f12cd.js.map",
+    "static/js/2.c091cfe5.chunk.js": "/quirk/static/js/2.c091cfe5.chunk.js",
+    "static/js/2.c091cfe5.chunk.js.map": "/quirk/static/js/2.c091cfe5.chunk.js.map",
+    "index.html": "/quirk/index.html",
+    "static/css/main.fdb6854f.chunk.css.map": "/quirk/static/css/main.fdb6854f.chunk.css.map",
+    "static/js/2.c091cfe5.chunk.js.LICENSE.txt": "/quirk/static/js/2.c091cfe5.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.904f12cd.js",
+    "static/js/2.c091cfe5.chunk.js",
+    "static/css/main.fdb6854f.chunk.css",
+    "static/js/main.3382cfa1.chunk.js"
+  ]
+}
