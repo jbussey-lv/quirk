@@ -1,0 +1,34 @@
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from '../app/store';
+import { TileInterface, getFullTileSet } from '../features/tile/Tile';
+import { addPlacement } from './gameSlice';
+
+
+export const bagSlice = createSlice({
+  name: 'bag',
+  initialState: {
+    tiles: [...getFullTileSet()]
+  },
+  // The `reducers` field lets us define reducers and generate associated actions
+  reducers: {
+    removeTile(state, action: PayloadAction<number>){
+      state.tiles.splice(action.payload, 1)
+    },
+    addTile(state, action: PayloadAction<TileInterface>){
+      state.tiles.push(action.payload);
+    }
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(addPlacement, (state, action) => {
+        state.tiles = state.tiles.filter(tile => tile.id !== action.payload.tile.id)
+      })
+
+  }
+});
+
+export const { addTile, removeTile } = bagSlice.actions;
+
+export const selectTiles = (state: RootState) => state.bag.tiles;
+
+export default bagSlice.reducer;
