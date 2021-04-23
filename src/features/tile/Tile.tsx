@@ -28,6 +28,11 @@ export interface TileInterface {
   id: number;
 }
 
+export type TileProps = {
+  tile: TileInterface;
+  dragable: boolean;
+}
+
 export function getFullTileSet(): TileInterface[] {
   let tileSet: TileInterface[] = [];
   let id = 0;
@@ -45,13 +50,21 @@ export function getFullTileSet(): TileInterface[] {
   return tileSet;
 }
 
-const Tile = ({ color, shape }: TileInterface) => { 
-  return (
-    <div className={styles.tile} style={{color}}>{ shape }</div>
-  );
+export const Tile = ({ tile, dragable }: TileProps) => {
+  return dragable ?
+         <DragableTile {...tile} /> :
+         <InnertTile {...tile} />
 }
 
-export function DragableTile(tile: TileInterface) {
+function InnertTile(tile: TileInterface) {
+  return (
+    <div style={{display: 'inline-block'}}>
+      <InnerTile {...tile} />
+    </div>
+  )
+}
+
+function DragableTile(tile: TileInterface) {
   const [{isDragging}, drag] = useDrag(() => ({
     type: "tile",
     item: tile,
@@ -69,8 +82,14 @@ export function DragableTile(tile: TileInterface) {
         display: 'inline-block'
       }}
     >
-      <Tile {...tile} />
+      <InnerTile {...tile} />
     </div>
+  )
+}
+
+const InnerTile = ({color, shape}: TileInterface) => {
+  return (
+    <div className={styles.tile} style={{color, }}>{ shape }</div>
   )
 }
 

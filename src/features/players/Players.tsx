@@ -1,6 +1,7 @@
+import { useDrop } from "react-dnd";
 import { useAppDispatch, useInput } from "../../app/hooks";
-import { addPlayer, removePlayer, startGame, resetGame, finishMove, PlayerInterface, GameStatus, MoveInterface } from "../../slices/gameSlice";
-import { DragableTile } from "../tile/Tile";
+import { addPlayer, removePlayer, startGame, resetGame, removePlacement, finishMove, PlayerInterface, GameStatus, MoveInterface } from "../../slices/gameSlice";
+import { Tile, TileInterface } from "../tile/Tile";
 import styles from './Player.module.css';
 
 type PlayersProps = {
@@ -36,6 +37,16 @@ export function Players({players, gameStatus}: PlayersProps) {
   let clickFinishMove = () => {
     dispatch(finishMove());
   }
+
+  const[{isOver}, drop] = useDrop({
+    accept: "tile",
+    drop: (tile: TileInterface, monitor) => {
+      dispatch(removePlacement(tile));
+    },
+    collect: monitor => ({
+      isOver: !!monitor.isOver()
+    })
+  });
 
   return (
     <div>
@@ -90,9 +101,12 @@ export function Players({players, gameStatus}: PlayersProps) {
           <tr>
             <th>Hand</th>
             {players.map((player:PlayerInterface) => (
-              <td className={player.atBat ? styles.atBat : ""} key={player.id}>
+              <td className={player.atBat ? styles.atBat : ""}
+                  key={player.id}
+                  ref={player.atBat ? drop : null}
+              >
                 { player.hand.map(tile => (
-                  <DragableTile { ...tile } key={ tile.id } />
+                  <Tile tile={tile} dragable={player.atBat} key={tile.id} />
                 ))}
               </td>
             ))}

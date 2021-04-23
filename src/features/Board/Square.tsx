@@ -1,14 +1,14 @@
 import { useDrop } from "react-dnd";
 import { useAppDispatch } from "../../app/hooks";
 import { addPlacement, Position } from "../../slices/gameSlice";
-import Tile, { TileInterface } from "../tile/Tile";
+import Tile, { TileInterface, TileProps } from "../tile/Tile";
 
 type SquareProps = {
-  tile: TileInterface|null;
+  tileProps: TileProps|null;
   position: Position;
 }
 
-export function Square({ tile, position }: SquareProps) {
+export function Square({ tileProps: tileProps, position }: SquareProps) {
 
   const dispatch = useAppDispatch();
 
@@ -22,13 +22,13 @@ export function Square({ tile, position }: SquareProps) {
     })
   })
 
-  let getCellContents = function(tile: TileInterface|null){
-    return tile ? (<Tile {...tile} />) : "";
+  if(tileProps){
+    return (
+      <td><Tile {...tileProps} /></td>
+    )
+  } else {
+    return (
+      <td ref={drop}></td>
+    )
   }
-
-  return (
-    <td ref={drop}>
-      { getCellContents(tile) }
-    </td>
-  )
 }

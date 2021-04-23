@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
-import { TileInterface, getFullTileSet } from '../features/tile/Tile';
+import { TileProps, TileInterface, getFullTileSet } from '../features/tile/Tile';
 import { createSelector } from 'reselect';
 import { v4 as uuidv4 } from 'uuid';
 import shuffleArray from 'shuffle-array';
@@ -61,20 +61,27 @@ const getNewMove = function(): MoveInterface {
   }
 }
 
-const getBlankGrid = function(rows: number, cols: number): (TileInterface|null)[][]{
+const getBlankGrid = function(rows: number, cols: number): (TileProps|null)[][]{
   return [...Array(rows)].map(e => Array(cols).fill(null));
 }
 
-const getInitialGrid = function(): (TileInterface|null)[][]{
+const getInitialGrid = function(): (TileProps|null)[][]{
   return getBlankGrid(initialHeight, initialWidth);
 }
 
-const getPopulatedGrid = function(moves: MoveInterface[]): (TileInterface|null)[][] {
+const isCurrentMove = function(move: MoveInterface, moves: MoveInterface[]): boolean {
+  return moves[moves.length - 1] === move;
+}
+
+const getPopulatedGrid = function(moves: MoveInterface[]): (TileProps|null)[][] {
 
   let grid = getInitialGrid();
   moves.forEach(move => {
     move.placements.forEach(placement => {
-      grid[placement.position.row][placement.position.col] = placement.tile;
+      grid[placement.position.row][placement.position.col] = {
+        tile: placement.tile,
+        dragable: isCurrentMove(move, moves)
+      }
     })
   });
 
@@ -160,22 +167,45 @@ const getCurrentPlayer = (moves:MoveInterface[], players:RawPlayerInterface[]): 
   return players[currentPlayerIndex];
 }
 
+const getCurrentMove = (moves:MoveInterface[]): MoveInterface => {
+  return moves[moves.length - 1];
+}
+
+const clearTile = (players: RawPlayerInterface[], moves: MoveInterface[], targetTile: TileInterface): void => {
+    
+    // remove from all moves
+    moves.forEach(move => {
+      move.placements = move.placements.filter(placement => {
+        return placement.tile.id !== targetTile.id;
+      });
+    });
+
+    // remove from all hands
+    players.forEach(player => {
+      player.hand = player.hand.filter(tile => {
+        return tile.id !== targetTile.id;
+      });
+    });
+}
 
 export const gameSlice = createSlice({
   name: 'game',
   initialState,
-  // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
     addPlacement(state, action: PayloadAction<Placement>){
 
-      // add it to the current move
-      state.moves[state.moves.length - 1].placements.push(action.payload);
+      clearTile(state.players, state.moves, action.payload.tile);
 
-      // remove it from the current player's hand
+      // add it to the current move
+      let move = getCurrentMove(state.moves);
+      move.placements.push(action.payload);
+    },
+    removePlacement(state, action: PayloadAction<TileInterface>){
+
+      clearTile(state.players, state.moves, action.payload);
+
       let currentPlayer = getCurrentPlayer(state.moves, state.players);
-      if(currentPlayer){
-        currentPlayer.hand = currentPlayer?.hand.filter(tile => tile.id !== action.payload.tile.id);
-      }
+      currentPlayer?.hand.push(action.payload);
     },
     finishMove(state){
       let currentPlayer = getCurrentPlayer(state.moves, state.players);
@@ -208,6 +238,6 @@ export const gameSlice = createSlice({
 });
 
 
-export const { addPlacement, finishMove, addPlayer, removePlayer, startGame, resetGame } = gameSlice.actions;
+export const { addPlacement, removePlacement, finishMove, addPlayer, removePlayer, startGame, resetGame } = gameSlice.actions;
 
 export default gameSlice.reducer;
