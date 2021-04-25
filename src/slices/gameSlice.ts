@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
-import { TileProps, TileInterface, getFullTileSet } from '../features/tile/Tile';
+import Tile, { TileProps, TileInterface, getFullTileSet, Status } from '../features/tile/Tile';
 import { createSelector } from 'reselect';
 import { v4 as uuidv4 } from 'uuid';
 import shuffleArray from 'shuffle-array';
 import shuffle from 'shuffle-array';
+import { platform } from 'node:os';
 
 const initialWidth = 12;
 const initialHeight = 12;
@@ -21,7 +22,7 @@ export enum GameStatus {
   Over = "over"
 }
 
-interface Placement {
+interface PlacementInterface {
   tile: TileInterface;
   position: Position;
 }
@@ -48,7 +49,7 @@ export interface PlayerInterface {
 
 
 export interface MoveInterface {
-  placements: Placement[];
+  placements: PlacementInterface[];
   points: number;
   type: MoveType|null;
 }
@@ -73,14 +74,83 @@ const isCurrentMove = function(move: MoveInterface, moves: MoveInterface[]): boo
   return moves[moves.length - 1] === move;
 }
 
-const getPopulatedGrid = function(moves: MoveInterface[]): (TileProps|null)[][] {
+const isMoveIllegal = (move: MoveInterface, grid: (TileProps|null)[][]): boolean => {
+  return moveHasRepeats(move) ||
+         moveHasNoPattern(move) || 
+         gridIsDisjoint(grid);
+}
 
+const gridIsDisjoint = (grid: (TileProps|null)[][]): boolean => {
+  
+  let markGrid = grid.map((row: (TileProps | null)[]) => {
+    return row.map((tile) => {
+      return {marked: false, populated: !!tile};
+    })
+  })
+  
+  // [...Array(grid.length)].map(e => Array(grid[0].length).fill(false));
+  // let regions = 0;
+  // grid.forEach((cells, row) => {
+  //   cells.forEach((cell, col) => {
+  //     if(grid[row][col] !== null && markGrid[row][col] === false){
+  //       regions += 1;
+  //       visitCell(grid, markGrid);
+  //     }
+  //   })
+  // })
+  return false
+}
+
+const visitCell = (grid: (TileProps|null)[][], markGrid: (boolean)[][]): void => {
+
+}
+
+const moveHasRepeats = (move: MoveInterface): boolean => {
+  let combos = move.placements.map(placement => {
+    return placement.tile.color + "-" + placement.tile.shape;
+  });
+
+  let comboSet = new Set(combos);
+
+  return comboSet.size < move.placements.length;
+}
+
+const moveHasNoPattern = (move: MoveInterface): boolean => {
+  return getUniqueShapes(move).size > 1 &&
+         getUniqueColors(move).size > 1;
+}
+
+const getUniqueShapes = (move: MoveInterface): Set<string> => {
+  let vals = move.placements.map(placement => {
+    return placement.tile.shape;
+  });
+
+  return new Set(vals);
+}
+
+const getUniqueColors = (move: MoveInterface): Set<string> => {
+  let vals = move.placements.map(placement => {
+    return placement.tile.color;
+  });
+
+  return new Set(vals);
+}
+
+const getPopulatedGrid = function(moves: MoveInterface[]): (TileProps|null)[][] {
+ 
   let grid = getInitialGrid();
   moves.forEach(move => {
+    let currentMove = isCurrentMove(move, moves);
+    let isIllegal = isMoveIllegal(move, grid);
     move.placements.forEach(placement => {
+      let status = Status.Normal;
+      if(currentMove){
+        status = isIllegal ? Status.Illegal : Status.Active;
+      }
       grid[placement.position.row][placement.position.col] = {
-        tile: placement.tile,
-        dragable: isCurrentMove(move, moves)
+        ...placement.tile,
+        dragable: currentMove,
+        status: status
       }
     })
   });
@@ -192,7 +262,7 @@ export const gameSlice = createSlice({
   name: 'game',
   initialState,
   reducers: {
-    addPlacement(state, action: PayloadAction<Placement>){
+    addPlacement(state, action: PayloadAction<PlacementInterface>){
 
       clearTile(state.players, state.moves, action.payload.tile);
 

@@ -1,7 +1,6 @@
 import { useAppSelector } from './app/hooks';
 import { selectGrid, selectPlayers, selectGameStatus, selectBag, PlayerInterface, selectCurrentPlayer } from './slices/gameSlice';
 import { Board } from './features/Board/Board'
-import { Bag } from './features/bag/Bag'
 import { Players } from './features/players/Players'
 
 import { DndProvider } from 'react-dnd'
@@ -23,9 +22,6 @@ function App() {
         <div style={{width: "50%", float: "left"}}>
           <Players players={ players } gameStatus={ gameStatus }/>
         </div>
-      </div>
-      <div style={{clear: "both"}}>
-        <Bag bag={ bag } />
       </div>
     </DndProvider>
   );

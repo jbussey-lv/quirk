@@ -1,11 +1,27 @@
 .tile {
-  margin: 2px;
-  padding: 3px;
   display: inline-block;
   background-color: rgb(26, 26, 26);
-  width: 23px;
-  height: 23px;
+  width: 26px;
+  height: 26px;
   box-sizing: border-box;
-  overflow: hidden;
+  overflow: hidden; 
   text-align: center;
+}
+
+.active, .normal, .illegal {
+  padding-bottom: -6px;
+  height: 26px;
+  vertical-align: middle;
+}
+
+.active {
+  border: 2px solid grey;
+}
+
+.normal {
+  border: 2px solid black;
+}
+
+.illegal {
+  border: 2px solid red;
 }
