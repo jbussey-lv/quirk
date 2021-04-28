@@ -3,9 +3,7 @@ import { RootState } from '../app/store';
 import Tile, { TileProps, TileInterface, getFullTileSet, Status } from '../features/tile/Tile';
 import { createSelector } from 'reselect';
 import { v4 as uuidv4 } from 'uuid';
-import shuffleArray from 'shuffle-array';
 import shuffle from 'shuffle-array';
-import { platform } from 'node:os';
 
 const initialWidth = 12;
 const initialHeight = 12;
@@ -24,10 +22,10 @@ export enum GameStatus {
 
 interface PlacementInterface {
   tile: TileInterface;
-  position: Position;
+  position: PositionInterface;
 }
 
-export interface Position {
+export interface PositionInterface {
   row: number;
   col: number;
 }
@@ -54,6 +52,11 @@ export interface MoveInterface {
   type: MoveType|null;
 }
 
+interface TypeGridCell {
+  marked: boolean;
+  populated: boolean;
+}
+
 const getNewMove = function(): MoveInterface {
   return {
     placements: [],
@@ -77,32 +80,61 @@ const isCurrentMove = function(move: MoveInterface, moves: MoveInterface[]): boo
 const isMoveIllegal = (move: MoveInterface, grid: (TileProps|null)[][]): boolean => {
   return moveHasRepeats(move) ||
          moveHasNoPattern(move) || 
+         moveIsNotLinear(move) ||
          gridIsDisjoint(grid);
+}
+
+const moveIsNotLinear = (move: MoveInterface): boolean => {
+  let rows = new Set(move.placements.map(placement => placement.position.row));
+  let cols = new Set(move.placements.map(placement => placement.position.col));
+  return rows.size > 1 && cols.size > 1;
 }
 
 const gridIsDisjoint = (grid: (TileProps|null)[][]): boolean => {
   
   let markGrid = grid.map((row: (TileProps | null)[]) => {
-    return row.map((tile) => {
-      return {marked: false, populated: !!tile};
+    return row.map(tile => {
+      return {marked: false, populated: tile !== null};
+    })
+  })
+
+  let regions = 0;
+  markGrid.forEach((cells, row) => {
+    cells.forEach((cell, col) => {
+      if(cell.populated && !cell.marked){
+        regions += 1;
+        visitCell(markGrid, {row, col});
+      }
     })
   })
   
-  // [...Array(grid.length)].map(e => Array(grid[0].length).fill(false));
-  // let regions = 0;
-  // grid.forEach((cells, row) => {
-  //   cells.forEach((cell, col) => {
-  //     if(grid[row][col] !== null && markGrid[row][col] === false){
-  //       regions += 1;
-  //       visitCell(grid, markGrid);
-  //     }
-  //   })
-  // })
-  return false
+  return regions > 1;
 }
 
-const visitCell = (grid: (TileProps|null)[][], markGrid: (boolean)[][]): void => {
+const visitCell = (markGrid:TypeGridCell[][], position:PositionInterface): void => {
+  let markGridCell = markGrid[position.row][position.col];
+  if(!markGridCell.marked && markGridCell.populated){
+    markGridCell.marked = true;
+    getNeighborPositions(markGrid, position).forEach(neighborPosition => {
+      visitCell(markGrid, neighborPosition);
+    });
+  }
+}
 
+const getNeighborPositions = (markGrid:TypeGridCell[][], position:PositionInterface): PositionInterface[] => {
+  let possible = [
+    {row: position.row-1, col: position.col},
+    {row: position.row+1, col: position.col},
+    {row: position.row, col: position.col-1},
+    {row: position.row, col: position.col+1}
+  ];
+
+  return possible.filter(position => {
+    return position.row >= 0 &&
+           position.row < markGrid.length &&
+           position.col >= 0 &&
+           position.col < markGrid[0].length
+  });
 }
 
 const moveHasRepeats = (move: MoveInterface): boolean => {
@@ -141,19 +173,28 @@ const getPopulatedGrid = function(moves: MoveInterface[]): (TileProps|null)[][] 
   let grid = getInitialGrid();
   moves.forEach(move => {
     let currentMove = isCurrentMove(move, moves);
-    let isIllegal = isMoveIllegal(move, grid);
     move.placements.forEach(placement => {
-      let status = Status.Normal;
-      if(currentMove){
-        status = isIllegal ? Status.Illegal : Status.Active;
-      }
+      let status = currentMove ? Status.Active : Status.Normal;
+
       grid[placement.position.row][placement.position.col] = {
         ...placement.tile,
         dragable: currentMove,
-        status: status
+        status
       }
     })
   });
+
+  if(moves.length > 0){
+    let currentMove = moves[moves.length - 1];
+    if(isMoveIllegal(currentMove, grid)){
+      currentMove.placements.forEach(placement => {
+        let tile = grid[placement.position.row][placement.position.col];
+        if(tile){
+          tile.status = Status.Illegal;
+        }
+      })
+    }
+  }
 
   return grid;
 }
@@ -211,6 +252,12 @@ export const selectGrid = (state: RootState) => {
   return getPopulatedGrid(state.game.moves);
 }
 
+export const SelectIsCurrentMoveIllegal = (state: RootState) => {
+  let moves = state.game.moves;
+  let grid = getPopulatedGrid(moves);
+  if(moves.length < 1){return false}
+  return isMoveIllegal(moves[moves.length - 1], grid);
+}
 
 export const selectGameStatus = (state: RootState) => {
   return getGameStatus(state.game.moves);

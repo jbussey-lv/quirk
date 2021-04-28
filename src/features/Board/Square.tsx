@@ -1,11 +1,11 @@
 import { useDrop } from "react-dnd";
 import { useAppDispatch } from "../../app/hooks";
-import { addPlacement, Position } from "../../slices/gameSlice";
+import { addPlacement, PositionInterface } from "../../slices/gameSlice";
 import Tile, { TileInterface, TileProps } from "../tile/Tile";
 
 type SquareProps = {
   tileProps: TileProps|null;
-  position: Position;
+  position: PositionInterface;
 }
 
 export function Square({ tileProps: tileProps, position }: SquareProps) {

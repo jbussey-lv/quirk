@@ -22,8 +22,11 @@
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.0",
     "react-scripts": "4.0.3",
+    "redux": "^4.1.0",
+    "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
     "shuffle-array": "^1.0.1",
+    "thunk": "^0.0.1",
     "typescript": "~4.1.5",
     "uuid": "^8.3.2"
   },
@@ -33,7 +36,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-   "deploy": "gh-pages -b master -d build"
+    "deploy": "gh-pages -b master -d build"
   },
   "eslintConfig": {
     "extends": "react-app"

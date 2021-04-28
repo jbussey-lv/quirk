@@ -1,5 +1,5 @@
 import { useAppSelector } from './app/hooks';
-import { selectGrid, selectPlayers, selectGameStatus, selectBag, PlayerInterface, selectCurrentPlayer } from './slices/gameSlice';
+import { selectGrid, selectPlayers, selectGameStatus, selectBag, PlayerInterface, SelectIsCurrentMoveIllegal } from './slices/gameSlice';
 import { Board } from './features/Board/Board'
 import { Players } from './features/players/Players'
 
@@ -12,6 +12,7 @@ function App() {
   const bag = useAppSelector(selectBag);
   const players:PlayerInterface[] = useAppSelector(selectPlayers);
   const gameStatus = useAppSelector(selectGameStatus);
+  const isCurrentMoveIllegal = useAppSelector(SelectIsCurrentMoveIllegal);
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -20,7 +21,7 @@ function App() {
           <Board grid={ grid }/>
         </div>
         <div style={{width: "50%", float: "left"}}>
-          <Players players={ players } gameStatus={ gameStatus }/>
+          <Players players={ players } gameStatus={ gameStatus } isCurrentMoveIllegal={ isCurrentMoveIllegal }/>
         </div>
       </div>
     </DndProvider>

@@ -7,9 +7,10 @@ import styles from './Player.module.css';
 type PlayersProps = {
   players: PlayerInterface[];
   gameStatus: GameStatus;
+  isCurrentMoveIllegal: boolean;
 }
 
-export function Players({players, gameStatus}: PlayersProps) {
+export function Players({players, gameStatus, isCurrentMoveIllegal}: PlayersProps) {
 
   const dispatch = useAppDispatch();
 
@@ -48,6 +49,14 @@ export function Players({players, gameStatus}: PlayersProps) {
     })
   });
 
+  const getFinishMoveButton = () => {
+    if(isCurrentMoveIllegal){
+      return <button disabled={true}>Finish Move</button>
+    } else {
+      return <button onClick={clickFinishMove}>Finish Move</button>
+    }
+  }
+
   return (
     <div>
       <h1>Game Status: { gameStatus } </h1>
@@ -62,7 +71,7 @@ export function Players({players, gameStatus}: PlayersProps) {
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <button onClick={clickResetGame}>Rest Game</button>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <button onClick={clickFinishMove}>Finish Move</button>
+        { getFinishMoveButton() }
       </div>
 
       <table className={styles.table}>
