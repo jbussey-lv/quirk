@@ -2,8 +2,6 @@ import styles from './Tile.module.css';
 
 import { useDrag } from 'react-dnd'
 
-const repeats = 3;
-
 export enum Shape {
   Cross = "✚",
   Square = "▪",
@@ -29,32 +27,15 @@ export enum Status {
   Dim = "dim"
 }
 
-export interface TileInterface {
+export interface Tile {
   color: Color;
   shape: Shape;
   id: number;
 }
 
-export interface TileProps extends TileInterface {
+export interface TileProps extends Tile {
   dragable: boolean;
   status: Status;
-}
-
-export function getFullTileSet(): TileInterface[] {
-  let tileSet: TileInterface[] = [];
-  let id = 0;
-  for (let colorVal in Color) {
-    for (let shapeVal in Shape) {
-      for(let i = 0; i < repeats; i++){
-        id++;
-        let color:Color = Color[colorVal as keyof typeof Color];
-        let shape:Shape = Shape[shapeVal as keyof typeof Shape];
-        tileSet.push({color, shape, id})
-      }
-    }
-  }
-
-  return tileSet;
 }
 
 export const Tile = (props: TileProps) => {
@@ -95,7 +76,7 @@ function DragableTile(tileProps: TileProps) {
   )
 }
 
-const InnerTile = ({color, shape}: TileInterface) => {
+const InnerTile = ({color, shape}: Tile) => {
   return (
     <div className={styles.tile} style={{color}}>{shape}</div>
   )

@@ -1,14 +1,46 @@
 import styles from './Board.module.css';
 
-import { TileProps } from '../tile/Tile'
-import { Square } from './Square';
+import Tile, { TileInterface, TileProps } from '../tile/Tile'
+import { addPlacement, Position } from "../../slices/gameSlice";
+import { useAppDispatch } from '../../app/hooks';
+import { useDrop } from 'react-dnd';
 
 type BoardProps = {
   grid: (TileProps|null)[][]
 }
 
-export function Board({ grid }: BoardProps) { 
 
+type SquareProps = {
+  tileProps: TileProps|null;
+  position: Position;
+}
+
+export function Square({ tileProps: tileProps, position }: SquareProps) {
+
+  const dispatch = useAppDispatch();
+
+  const[{isOver}, drop] = useDrop({
+    accept: "tile",
+    drop: (tile: TileInterface, monitor) => {
+      dispatch(addPlacement({tile, position}));
+    },
+    collect: monitor => ({
+      isOver: !!monitor.isOver()
+    })
+  })
+
+  if(tileProps){
+    return (
+      <td><Tile {...tileProps} /></td>
+    )
+  } else {
+    return (
+      <td ref={drop}></td>
+    )
+  }
+}
+
+export function Board({ grid }: BoardProps) { 
 
   return (
     <div>
