@@ -1,30 +1,25 @@
-import { useAppSelector } from './app/hooks';
-import { selectGrid, selectPlayers, selectGameStatus, selectBag, PlayerInterface, selectCurrentPlayer } from './slices/gameSlice';
-import { Board } from './features/Board/Board'
-import { Players } from './features/players/Players'
+
+import Game from './features/Game/Game'
+import Players from './features/Players/Players'
+import Board from './features/Board/Board'
 
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 
-function App() {
-
-  const grid = useAppSelector(selectGrid);
-  const bag = useAppSelector(selectBag);
-  const players:PlayerInterface[] = useAppSelector(selectPlayers);
-  const gameStatus = useAppSelector(selectGameStatus);
+export default function App(){
 
   return (
     <DndProvider backend={HTML5Backend}>
+      <Game />
       <div>
-        <div style={{width: "50%", float: "left"}}>
-          <Board grid={ grid }/>
+        <div style={{display: "inline-block", width: "50%", verticalAlign: "top", padding: "20px", boxSizing: "border-box"}}>
+          <Players />
         </div>
-        <div style={{width: "50%", float: "left"}}>
-          <Players players={ players } gameStatus={ gameStatus }/>
+        <div style={{display: "inline-block", width: "50%", verticalAlign: "top", padding: "20px", boxSizing: "border-box"}}>
+          <Board />
         </div>
       </div>
     </DndProvider>
   );
 }
 
-export default App;

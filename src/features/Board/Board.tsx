@@ -1,12 +1,15 @@
 import styles from './Board.module.css';
 
-import Tile, { TileInterface, TileProps } from '../tile/Tile'
-import { addPlacement, Position } from "../../slices/gameSlice";
-import { useAppDispatch } from '../../app/hooks';
+import Tile, { TilePrimitive, TileProps } from '../tile/Tile'
+import { addTile, removeTile, Position, selectGrid } from './boardSlice';
 import { useDrop } from 'react-dnd';
+import { RootState } from '../../app/store';
+import { connect } from 'react-redux';
 
 type BoardProps = {
-  grid: (TileProps|null)[][]
+  grid: (TileProps|null)[][];
+  addTile: any;
+  removeTile: any;
 }
 
 
@@ -15,14 +18,12 @@ type SquareProps = {
   position: Position;
 }
 
-export function Square({ tileProps: tileProps, position }: SquareProps) {
-
-  const dispatch = useAppDispatch();
+function Square({ tileProps, position }: SquareProps) {
 
   const[{isOver}, drop] = useDrop({
     accept: "tile",
-    drop: (tile: TileInterface, monitor) => {
-      dispatch(addPlacement({tile, position}));
+    drop: (tile: TilePrimitive, monitor) => {
+      addTile({tile, position});
     },
     collect: monitor => ({
       isOver: !!monitor.isOver()
@@ -40,7 +41,7 @@ export function Square({ tileProps: tileProps, position }: SquareProps) {
   }
 }
 
-export function Board({ grid }: BoardProps) { 
+export function Board({ grid, addTile, removeTile }: BoardProps) { 
 
   return (
     <div>
@@ -58,3 +59,16 @@ export function Board({ grid }: BoardProps) {
     </div>
   )
 }
+
+function mapStateToProps(state: RootState) {
+  return {
+    grid: selectGrid(state)
+  }
+}
+
+const mapDispatchToProps = {
+  addTile,
+  removeTile
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Board)

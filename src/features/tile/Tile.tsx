@@ -27,19 +27,19 @@ export enum Status {
   Dim = "dim"
 }
 
-export interface Tile {
+export interface TilePrimitive {
   color: Color;
   shape: Shape;
   id: number;
 }
 
-export interface TileProps extends Tile {
-  dragable: boolean;
+export interface TileProps extends TilePrimitive {
+  draggable: boolean;
   status: Status;
 }
 
-export const Tile = (props: TileProps) => {
-  return props.dragable ?
+const Tile = (props: TileProps) => {
+  return props.draggable ?
          <DragableTile {...props} /> :
          <InnertTile {...props} />
 }
@@ -76,7 +76,7 @@ function DragableTile(tileProps: TileProps) {
   )
 }
 
-const InnerTile = ({color, shape}: Tile) => {
+const InnerTile = ({color, shape}: TilePrimitive) => {
   return (
     <div className={styles.tile} style={{color}}>{shape}</div>
   )

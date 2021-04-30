@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import shuffle from "shuffle-array";
-import TileInterface, { Color, Shape } from "../tile/Tile";
+import { Color, Shape, TilePrimitive } from "../tile/Tile";
 
 const repeats = 3;
 
-function getFullTileSet(): TileInterface[] {
-  let tileSet: TileInterface[] = [];
+function getFullTileSet(): TilePrimitive[] {
+  let tileSet: TilePrimitive[] = [];
   let id = 0;
   for (let colorVal in Color) {
     for (let shapeVal in Shape) {
@@ -20,27 +20,38 @@ function getFullTileSet(): TileInterface[] {
   return tileSet;
 }
 
-function addTiles(state: TileInterface[], tiles: TileInterface[]){
-  shuffle(state);
-  state = state.concat(tiles);
+function addTilesHelper(state:State, newTiles: TilePrimitive[]){
+  state.tiles = state.tiles.concat(newTiles);
+  shuffle(state.tiles);
+}
+
+interface State {
+  tiles: TilePrimitive[];
+}
+
+const initialState:State = {
+  tiles: shuffle(getFullTileSet())
 }
 
 export const bagSlice = createSlice({
   name: 'bag',
-  initialState: [],
+  initialState,
   reducers: {
-    addTiles(state, action: PayloadAction<TileInterface[]>){
-      addTiles(state, action.payload);
+    addTiles(state, action: PayloadAction<TilePrimitive[]>){
+      addTilesHelper(state, action.payload);
     },
-    removeTiles(state, action: PayloadAction<TileInterface[]>){
+    removeTiles(state, action: PayloadAction<TilePrimitive[]>){
       let targetIds = action.payload.map(tile => tile.id);
-      state = state.filter((tile:TileInterface) => !targetIds.includes(tile.id));
+      state.tiles = state.tiles.filter((tile:TilePrimitive) => !targetIds.includes(tile.id));
     },
     reset(state){
-      state = [];
-      addTiles(state, getFullTileSet());
+      state.tiles = [];
+      addTilesHelper(state, getFullTileSet());
     }
   }
 });
+
+
+export const { addTiles, removeTiles, reset } = bagSlice.actions;
 
 export default bagSlice.reducer;
