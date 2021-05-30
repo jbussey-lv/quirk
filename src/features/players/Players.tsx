@@ -1,6 +1,7 @@
+import { useDrop } from "react-dnd";
 import { useAppDispatch, useInput } from "../../app/hooks";
-import { addPlayer, removePlayer, startGame, resetGame, finishMove, PlayerInterface, GameStatus, MoveInterface } from "../../slices/gameSlice";
-import { DragableTile } from "../tile/Tile";
+import { addPlayer, removePlayer, startGame, resetGame, removePlacement, finishMove, PlayerInterface, GameStatus, MoveInterface } from "../../slices/gameSlice";
+import { Status, Tile, TileInterface } from "../tile/Tile";
 import styles from './Player.module.css';
 
 type PlayersProps = {
@@ -37,6 +38,16 @@ export function Players({players, gameStatus}: PlayersProps) {
     dispatch(finishMove());
   }
 
+  const[{isOver}, drop] = useDrop({
+    accept: "tile",
+    drop: (tile: TileInterface, monitor) => {
+      dispatch(removePlacement(tile));
+    },
+    collect: monitor => ({
+      isOver: !!monitor.isOver()
+    })
+  });
+
   return (
     <div>
       <h1>Game Status: { gameStatus } </h1>
@@ -57,9 +68,9 @@ export function Players({players, gameStatus}: PlayersProps) {
       <table className={styles.table}>
         <thead>
           <tr>
-            <th>Player</th>
+            <th className ={styles.th}>Player</th>
             {players.map((player:PlayerInterface) => (
-              <td key={player.id} className={player.atBat ? styles.atBat : ""}>
+              <td key={player.id} className={styles.td + " " + (player.atBat ? styles.atBat : "")}>
                 <p>{player.name}</p>
                 <button onClick={() => clickRemovePlayer(player)}>
                   Remove
@@ -70,9 +81,9 @@ export function Players({players, gameStatus}: PlayersProps) {
         </thead>
         <tbody>
           <tr>
-            <th>Moves</th>
+            <th className ={styles.th}>Moves</th>
             {players.map((player:PlayerInterface) => (
-              <td className={player.atBat ? styles.atBat : ""} key={player.id}>
+              <td className={styles.td + " " + (player.atBat ? styles.atBat : "")} key={player.id}>
                 {player.moves.map((move:MoveInterface, j:number) => (
                   <p key={j}>{move.points}</p>
                 ))}
@@ -80,19 +91,22 @@ export function Players({players, gameStatus}: PlayersProps) {
             ))}
           </tr>
           <tr>
-            <th>Total</th>
+            <th className ={styles.th}>Total</th>
             {players.map((player:PlayerInterface) => (
-              <td className={player.atBat ? styles.atBat : ""} key={player.id}>
+              <td className={styles.td + " " + (player.atBat ? styles.atBat : "")} key={player.id}>
                 {player.totalPoints}
               </td>
             ))}
           </tr>
           <tr>
-            <th>Hand</th>
+            <th className ={styles.th}>Hand</th>
             {players.map((player:PlayerInterface) => (
-              <td className={player.atBat ? styles.atBat : ""} key={player.id}>
+              <td className={styles.td + " " + (player.atBat ? styles.atBat : "")}
+                  key={player.id}
+                  ref={player.atBat ? drop : null}
+              >
                 { player.hand.map(tile => (
-                  <DragableTile { ...tile } key={ tile.id } />
+                  <Tile {...tile} dragable={player.atBat} status={Status.Normal} key={tile.id} />
                 ))}
               </td>
             ))}

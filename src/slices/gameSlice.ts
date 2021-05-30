@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
-import { TileInterface, getFullTileSet } from '../features/tile/Tile';
+import Tile, { TileProps, TileInterface, getFullTileSet, Status } from '../features/tile/Tile';
 import { createSelector } from 'reselect';
 import { v4 as uuidv4 } from 'uuid';
 import shuffleArray from 'shuffle-array';
 import shuffle from 'shuffle-array';
+import { platform } from 'node:os';
 
 const initialWidth = 12;
 const initialHeight = 12;
@@ -21,7 +22,7 @@ export enum GameStatus {
   Over = "over"
 }
 
-interface Placement {
+interface PlacementInterface {
   tile: TileInterface;
   position: Position;
 }
@@ -48,7 +49,7 @@ export interface PlayerInterface {
 
 
 export interface MoveInterface {
-  placements: Placement[];
+  placements: PlacementInterface[];
   points: number;
   type: MoveType|null;
 }
@@ -61,20 +62,96 @@ const getNewMove = function(): MoveInterface {
   }
 }
 
-const getBlankGrid = function(rows: number, cols: number): (TileInterface|null)[][]{
+const getBlankGrid = function(rows: number, cols: number): (TileProps|null)[][]{
   return [...Array(rows)].map(e => Array(cols).fill(null));
 }
 
-const getInitialGrid = function(): (TileInterface|null)[][]{
+const getInitialGrid = function(): (TileProps|null)[][]{
   return getBlankGrid(initialHeight, initialWidth);
 }
 
-const getPopulatedGrid = function(moves: MoveInterface[]): (TileInterface|null)[][] {
+const isCurrentMove = function(move: MoveInterface, moves: MoveInterface[]): boolean {
+  return moves[moves.length - 1] === move;
+}
 
+const isMoveIllegal = (move: MoveInterface, grid: (TileProps|null)[][]): boolean => {
+  return moveHasRepeats(move) ||
+         moveHasNoPattern(move) || 
+         gridIsDisjoint(grid);
+}
+
+const gridIsDisjoint = (grid: (TileProps|null)[][]): boolean => {
+  
+  let markGrid = grid.map((row: (TileProps | null)[]) => {
+    return row.map((tile) => {
+      return {marked: false, populated: !!tile};
+    })
+  })
+  
+  // [...Array(grid.length)].map(e => Array(grid[0].length).fill(false));
+  // let regions = 0;
+  // grid.forEach((cells, row) => {
+  //   cells.forEach((cell, col) => {
+  //     if(grid[row][col] !== null && markGrid[row][col] === false){
+  //       regions += 1;
+  //       visitCell(grid, markGrid);
+  //     }
+  //   })
+  // })
+  return false
+}
+
+const visitCell = (grid: (TileProps|null)[][], markGrid: (boolean)[][]): void => {
+
+}
+
+const moveHasRepeats = (move: MoveInterface): boolean => {
+  let combos = move.placements.map(placement => {
+    return placement.tile.color + "-" + placement.tile.shape;
+  });
+
+  let comboSet = new Set(combos);
+
+  return comboSet.size < move.placements.length;
+}
+
+const moveHasNoPattern = (move: MoveInterface): boolean => {
+  return getUniqueShapes(move).size > 1 &&
+         getUniqueColors(move).size > 1;
+}
+
+const getUniqueShapes = (move: MoveInterface): Set<string> => {
+  let vals = move.placements.map(placement => {
+    return placement.tile.shape;
+  });
+
+  return new Set(vals);
+}
+
+const getUniqueColors = (move: MoveInterface): Set<string> => {
+  let vals = move.placements.map(placement => {
+    return placement.tile.color;
+  });
+
+  return new Set(vals);
+}
+
+const getPopulatedGrid = function(moves: MoveInterface[]): (TileProps|null)[][] {
+ 
   let grid = getInitialGrid();
   moves.forEach(move => {
+    let currentMove = isCurrentMove(move, moves);
+    let isIllegal = isMoveIllegal(move, grid);
     move.placements.forEach(placement => {
-      grid[placement.position.row][placement.position.col] = placement.tile;
+      let status = Status.Normal;
+      if(currentMove){
+        status = isIllegal ? Status.Illegal : Status.Active;
+      }
+      grid[placement.position.row][placement.position.col] = {
+        ...placement.tile,
+        dragable: currentMove,
+        status: status
+      }
     })
   });
 
@@ -172,22 +249,45 @@ const getCurrentPlayer = (moves:MoveInterface[], players:RawPlayerInterface[]): 
   return players[currentPlayerIndex];
 }
 
+const getCurrentMove = (moves:MoveInterface[]): MoveInterface => {
+  return moves[moves.length - 1];
+}
+
+const clearTile = (players: RawPlayerInterface[], moves: MoveInterface[], targetTile: TileInterface): void => {
+    
+    // remove from all moves
+    moves.forEach(move => {
+      move.placements = move.placements.filter(placement => {
+        return placement.tile.id !== targetTile.id;
+      });
+    });
+
+    // remove from all hands
+    players.forEach(player => {
+      player.hand = player.hand.filter(tile => {
+        return tile.id !== targetTile.id;
+      });
+    });
+}
 
 export const gameSlice = createSlice({
   name: 'game',
   initialState,
-  // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
-    addPlacement(state, action: PayloadAction<Placement>){
+    addPlacement(state, action: PayloadAction<PlacementInterface>){
+
+      clearTile(state.players, state.moves, action.payload.tile);
 
       // add it to the current move
-      state.moves[state.moves.length - 1].placements.push(action.payload);
+      let move = getCurrentMove(state.moves);
+      move.placements.push(action.payload);
+    },
+    removePlacement(state, action: PayloadAction<TileInterface>){
 
-      // remove it from the current player's hand
+      clearTile(state.players, state.moves, action.payload);
+
       let currentPlayer = getCurrentPlayer(state.moves, state.players);
-      if(currentPlayer){
-        currentPlayer.hand = currentPlayer?.hand.filter(tile => tile.id !== action.payload.tile.id);
-      }
+      currentPlayer?.hand.push(action.payload);
     },
     finishMove(state){
       let currentPlayer = getCurrentPlayer(state.moves, state.players);
@@ -222,6 +322,6 @@ export const gameSlice = createSlice({
 });
 
 
-export const { addPlacement, finishMove, addPlayer, removePlayer, startGame, resetGame } = gameSlice.actions;
+export const { addPlacement, removePlacement, finishMove, addPlayer, removePlayer, startGame, resetGame } = gameSlice.actions;
 
 export default gameSlice.reducer;

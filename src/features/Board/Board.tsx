@@ -1,10 +1,10 @@
 import styles from './Board.module.css';
 
-import { TileInterface } from '../tile/Tile'
+import { TileProps } from '../tile/Tile'
 import { Square } from './Square';
 
 type BoardProps = {
-  grid: (TileInterface|null)[][]
+  grid: (TileProps|null)[][]
 }
 
 export function Board({ grid }: BoardProps) { 
@@ -14,10 +14,10 @@ export function Board({ grid }: BoardProps) {
     <div>
       <table className={styles.table}>
         <tbody>
-          { grid.map((row, i) => (
-            <tr key={i}> 
-              {row.map((tile, j) => (
-                <Square key={j} tile={tile} position={{row: i, col: j}}/>
+          { grid.map((tiles, row) => (
+            <tr key={row}> 
+              {tiles.map((tileProps, col) => (
+                <Square key={col} tileProps={tileProps} position={{row, col}}/>
               ))}
             </tr>
           ))} 

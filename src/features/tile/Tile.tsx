@@ -22,10 +22,22 @@ export enum Color {
   Orange = "orange"
 }
 
+export enum Status {
+  Active = "active",
+  Illegal = "illegal",
+  Normal = "normal",
+  Dim = "dim"
+}
+
 export interface TileInterface {
   color: Color;
   shape: Shape;
   id: number;
+}
+
+export interface TileProps extends TileInterface {
+  dragable: boolean;
+  status: Status;
 }
 
 export function getFullTileSet(): TileInterface[] {
@@ -45,16 +57,24 @@ export function getFullTileSet(): TileInterface[] {
   return tileSet;
 }
 
-const Tile = ({ color, shape }: TileInterface) => { 
-  return (
-    <div className={styles.tile} style={{color}}>{ shape }</div>
-  );
+export const Tile = (props: TileProps) => {
+  return props.dragable ?
+         <DragableTile {...props} /> :
+         <InnertTile {...props} />
 }
 
-export function DragableTile(tile: TileInterface) {
+function InnertTile(tileProps: TileProps) {
+  return (
+    <div style={{display: 'inline-block'}} className={styles[tileProps.status]}>
+      <InnerTile {...tileProps} />
+    </div>
+  )
+}
+
+function DragableTile(tileProps: TileProps) {
   const [{isDragging}, drag] = useDrag(() => ({
     type: "tile",
-    item: tile,
+    item: tileProps,
     collect: monitor => ({
       isDragging: !!monitor.isDragging(),
     }),
@@ -68,9 +88,16 @@ export function DragableTile(tile: TileInterface) {
         cursor: 'move',
         display: 'inline-block'
       }}
+      className={styles[tileProps.status]}
     >
-      <Tile {...tile} />
+      <InnerTile {...tileProps} />
     </div>
+  )
+}
+
+const InnerTile = ({color, shape}: TileInterface) => {
+  return (
+    <div className={styles.tile} style={{color}}>{shape}</div>
   )
 }
 
