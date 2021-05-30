@@ -47,7 +47,7 @@ export function Players({players, gameStatus}: PlayersProps) {
       <br />
 
       <div>
-        <button onClick={clickStartGame}>Start Game</button>
+        <button id="startGame" onClick={clickStartGame} style={{display: "none"}}>Start Game</button>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <button onClick={clickResetGame}>Rest Game</button>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

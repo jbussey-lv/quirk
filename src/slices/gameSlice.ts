@@ -113,6 +113,18 @@ function createNewPlayer(name:string, bag:TileInterface[]): RawPlayerInterface {
   return {name, hand: [], id: uuidv4()}
 }
 
+// Check if One or More players have been created
+// if more than more than 2 players, then show the start button.
+function playerCheck(players: number)
+{
+  // the current func. allows to add many players, we check for a value greater than 2.
+  if(players >= 2){
+    (document.getElementById('startGame') as HTMLInputElement).style.display = 'initial';
+  }else{
+    (document.getElementById('startGame') as HTMLInputElement).style.display = 'none';
+  }
+}
+
 export const selectBag = (state: RootState) => state.game.bag;
 
 export const selectPlayers = (state: RootState): PlayerInterface[] => {
@@ -188,9 +200,11 @@ export const gameSlice = createSlice({
     },
     addPlayer(state, action: PayloadAction<string>){
       state.players.push(createNewPlayer(action.payload, state.bag));
+      playerCheck(state.players.length);
     },
     removePlayer(state, action: PayloadAction<PlayerInterface>){
       state.players = state.players.filter(player => player.id !== action.payload.id);
+      playerCheck(state.players.length);
     },
     startGame(state){
       replenishAllHands(state.players, state.bag);
