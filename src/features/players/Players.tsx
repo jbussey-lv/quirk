@@ -51,16 +51,17 @@ export function Players({players, gameStatus}: PlayersProps) {
   return (
     <div>
       <h1>Game Status: { gameStatus } </h1>
-      <input type="text" {...bind} />
-      <button onClick={clickAddPlayer}>Add Player</button>
-
+      <div id="addPlayer" className={gameStatus === "setup" ? "btnShow" : "btnHide"}>
+        <input type="text" {...bind} />
+        <button onClick={clickAddPlayer} >Add Player</button>
+      </div>
       <br />
       <br />
 
       <div>
-        <button id="startGame" onClick={clickStartGame} style={{display: "none"}}>Start Game</button>
+        <button id="startGame" onClick={clickStartGame} className={"btnHide"}>Start Game</button>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <button onClick={clickResetGame}>Rest Game</button>
+        <button onClick={clickResetGame}>Reset Game</button>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <button onClick={clickFinishMove}>Finish Move</button>
       </div>
@@ -72,7 +73,7 @@ export function Players({players, gameStatus}: PlayersProps) {
             {players.map((player:PlayerInterface) => (
               <td key={player.id} className={styles.td + " " + (player.atBat ? styles.atBat : "")}>
                 <p>{player.name}</p>
-                <button onClick={() => clickRemovePlayer(player)}>
+                <button className={gameStatus === "ongoing" ? "btnHide" : "btnShow"} onClick={() => clickRemovePlayer(player)}>
                   Remove
                 </button>
               </td>

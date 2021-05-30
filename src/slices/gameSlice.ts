@@ -196,9 +196,11 @@ function playerCheck(players: number)
 {
   // the current func. allows to add many players, we check for a value greater than 2.
   if(players >= 2){
-    (document.getElementById('startGame') as HTMLInputElement).style.display = 'initial';
+    (document.getElementById('startGame') as HTMLInputElement).classList.remove("btnHide");
+    (document.getElementById('startGame') as HTMLInputElement).classList.add("btnShow");
   }else{
-    (document.getElementById('startGame') as HTMLInputElement).style.display = 'none';
+    (document.getElementById('startGame') as HTMLInputElement).classList.remove("btnShow");
+    (document.getElementById('startGame') as HTMLInputElement).classList.add("btnHide");
   }
 }
 
@@ -309,6 +311,8 @@ export const gameSlice = createSlice({
     startGame(state){
       replenishAllHands(state.players, state.bag);
       state.moves.push(getNewMove());
+      (document.getElementById('startGame') as HTMLInputElement).classList.remove("btnShow");
+      (document.getElementById('startGame') as HTMLInputElement).classList.add("btnHide");
     },
     resetGame(state){
       state.moves = [];

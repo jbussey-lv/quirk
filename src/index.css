@@ -11,3 +11,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.btnShow{
+  display: initial;
+}
+
+.btnHide{
+  display: none;
+}
