@@ -33,7 +33,7 @@ export const selectGrid = createSelector(
           draggable: false,
           status: TileStatus.Active
         }
-        grid[placement.position.row][placement.position.row] = tileProps;
+        grid[placement.position.row][placement.position.col] = tileProps;
       })
     });
     return grid;

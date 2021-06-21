@@ -94,14 +94,20 @@ export const playersSlice = createSlice({
 });
 
 export const selectPlayers = (state: RootState) => {
-  return state.players.map(player => {
+  return state.players.map((player, playerIndex) => {
     return {
       ...player,
       moves: [],
       totalPoints: 0,
-      atBat: true
+      atBat: getAtBat(playerIndex, state),
+
     }
   })
+}
+
+const getAtBat = (playerIndex: number, state: RootState) => {
+  if(state.moves.length === 0){return false;}
+  return (state.moves.length - 1) % state.players.length === playerIndex;
 }
 
 export const selectCurrentPlayer = (state: RootState) => {

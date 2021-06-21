@@ -1,8 +1,8 @@
-import { ActionCreator, ActionCreatorWithPayload, AsyncThunkAction, ThunkAction } from '@reduxjs/toolkit'
+import { ActionCreatorWithPayload } from '@reduxjs/toolkit'
 import { connect } from 'react-redux'
-import { AppThunk, RootState } from '../../app/store'
+import { RootState } from '../../app/store'
 import { finishMove } from '../Moves/movesSlice'
-import { PlayerProps } from '../Players/Players'
+import Players, { PlayerProps } from '../Players/Players'
 import { addPlayer, PlayerPrimitive, removePlayer, selectPlayers } from '../Players/playersSlice'
 import { Status, selectStatus, selectCanStartGame, startGame, resetGame } from './gameSlice'
 import PlayerSetup from './PlayerSetup'
@@ -44,7 +44,7 @@ export function Game(gameProps: GameProps) {
     if(status === Status.Setup){
       return <PlayerSetup {...{players, canStartGame, addPlayer, removePlayer, startGame}} />
     } else {
-      return null
+      return <Players />
     }
   }
 
